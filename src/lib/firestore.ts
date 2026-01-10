@@ -112,6 +112,11 @@ export async function createUserProfile(uid: string, data: Partial<UserProfile>)
     const userRef = doc(db, 'users', uid);
     const now = new Date();
 
+    // Remove undefined values to avoid Firestore errors
+    const cleanData = Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== undefined)
+    );
+
     await setDoc(userRef, {
         uid,
         trustScore: 50,
@@ -120,7 +125,7 @@ export async function createUserProfile(uid: string, data: Partial<UserProfile>)
         averageRating: 0,
         createdAt: now,
         updatedAt: now,
-        ...data
+        ...cleanData
     });
 }
 
@@ -142,8 +147,14 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
 
 export async function updateUserProfile(uid: string, data: Partial<UserProfile>) {
     const userRef = doc(db, 'users', uid);
+    
+    // Remove undefined values to avoid Firestore errors
+    const cleanData = Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== undefined)
+    );
+    
     await updateDoc(userRef, {
-        ...data,
+        ...cleanData,
         updatedAt: new Date()
     });
 }
