@@ -8,7 +8,10 @@ const Card = React.forwardRef<
     <div
         ref={ref}
         className={cn(
-            "rounded-xl border bg-card text-card-foreground shadow",
+            "rounded-xl bg-card/80 backdrop-blur-md text-card-foreground",
+            "border border-border/50 shadow-lg",
+            "transition-all duration-300 ease-in-out",
+            "hover:shadow-xl hover:border-primary/20",
             className
         )}
         {...props}
@@ -36,6 +39,8 @@ const CardTitle = React.forwardRef<
         ref={ref}
         className={cn(
             "font-semibold leading-none tracking-tight",
+            "bg-gradient-to-r from-primary to-accent",
+            "bg-clip-text text-transparent",
             className
         )}
         {...props}
@@ -76,3 +81,4 @@ const CardFooter = React.forwardRef<
 CardFooter.displayName = "CardFooter"
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+
