@@ -8,25 +8,25 @@ import styles from "./page.module.css"
 
 export default function TrustScorePage() {
     return (
-        <div className={styles.container}>
+        <div className={styles.page}>
             <div className={styles.wrapper}>
 
                 <div className={styles.header}>
-                    <h1>Your Reputation</h1>
+                    <h1 className={styles.title}>Your Reputation</h1>
                     <p className={styles.subtitle}>Portable trust built on real actions.</p>
                 </div>
 
                 <div className={styles.grid}>
-                    <Card className={styles.scoreCard}>
+                    <div className={styles.scoreCard}>
                         <TrustScoreIndicator score={85} />
                         <div className={styles.badges}>
                             <Badge variant="default" className="bg-green-500 hover:bg-green-600">High Reliability</Badge>
                             <Badge variant="outline">Top 10%</Badge>
                         </div>
-                    </Card>
+                    </div>
 
                     <div className={styles.sidebar}>
-                        <Card>
+                        <Card className={styles.glassCard}>
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-lg flex items-center gap-2">
                                     <Activity className="h-5 w-5 text-primary" /> Recent Activity
@@ -56,7 +56,7 @@ export default function TrustScorePage() {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className={styles.glassCard}>
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-lg flex items-center gap-2">
                                     <UsersIcon /> Network Vouch

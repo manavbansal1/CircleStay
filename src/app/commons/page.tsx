@@ -63,35 +63,37 @@ const pools = [
 
 export default function CommonsPage() {
     return (
-        <div className={styles.container}>
+        <div className={styles.page}>
             <div className={styles.wrapper}>
                 <div className={styles.header}>
                     <div className={styles.headerText}>
                         <h1>Commons Pool</h1>
                         <p>Automated cost splitting for your circle.</p>
                     </div>
-                    <Button className="gap-2">
+                    <Button className="gap-2 shadow-lg">
                         <Plus className="h-4 w-4" /> New Pool
                     </Button>
                 </div>
 
                 <div className={styles.grid}>
                     {pools.map((pool) => (
-                        <Card key={pool.id} className={styles.poolCard}>
-                            <CardHeader className={styles.poolHeader}>
-                                <CardTitle className={styles.poolTitle}>
+                        <div key={pool.id} className={styles.poolCard}>
+                            <div className={styles.poolHeader}>
+                                <div className={styles.poolTitle}>
                                     {pool.name}
-                                </CardTitle>
-                                <pool.icon className={styles.poolIcon} />
-                            </CardHeader>
-                            <CardContent className={styles.poolContent}>
-                                <div className={styles.poolPrice}>
-                                    ${(pool.totalCost / pool.members.length).toFixed(2)}
-                                    <span className={styles.poolPriceUnit}>/mo per person</span>
                                 </div>
-                                <p className={styles.poolDetails}>
-                                    Total: ${pool.totalCost}/mo • Next: {pool.nextPayment}
-                                </p>
+                                <pool.icon className={styles.poolIcon} />
+                            </div>
+                            <div className={styles.poolContent}>
+                                <div>
+                                    <span className={styles.poolPrice}>
+                                        ${(pool.totalCost / pool.members.length).toFixed(2)}
+                                    </span>
+                                    <span className={styles.poolPriceUnit}>/mo per person</span>
+                                    <p className={styles.poolDetails}>
+                                        Total: ${pool.totalCost}/mo • Next: {pool.nextPayment}
+                                    </p>
+                                </div>
 
                                 <div className={styles.membersSection}>
                                     <div className={styles.membersLabel}>Members ({pool.members.length}/{pool.maxMembers})</div>
@@ -112,8 +114,8 @@ export default function CommonsPage() {
                                         {pool.status === "Open Spot" ? "Join Pool" : "Manage"}
                                     </Button>
                                 </div>
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>
