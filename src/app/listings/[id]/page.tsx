@@ -239,17 +239,17 @@ export default function ListingDetailPage() {
 
             {/* Request Modal */}
             {showRequestModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-background rounded-lg p-6 max-w-md w-full">
-                        <h3 className="text-xl font-bold mb-4">Request to View</h3>
-                        <p className="text-sm text-muted-foreground mb-4">
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl border border-gray-200">
+                        <h3 className="text-xl font-bold mb-4 text-gray-900">Request to View</h3>
+                        <p className="text-sm text-gray-600 mb-4">
                             Send a viewing request to the host. They'll receive a notification with your profile.
                         </p>
                         <textarea
                             value={requestMessage}
                             onChange={(e) => setRequestMessage(e.target.value)}
                             placeholder="Add a message (optional)"
-                            className="w-full p-3 border border-border rounded-lg mb-4 min-h-24"
+                            className="w-full p-3 border border-gray-300 rounded-lg mb-4 min-h-24 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                         />
                         <div className="flex gap-3">
                             <Button

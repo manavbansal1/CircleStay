@@ -116,7 +116,7 @@ export function NotificationItem({ notification, onMarkAsRead, onActionComplete 
     return (
         <div
             onClick={handleClick}
-            className={`p-4 border-b border-border hover:bg-secondary/50 cursor-pointer transition-colors ${!notification.read ? 'bg-primary/5' : ''
+            className={`p-4 border-b border-gray-100 hover:bg-orange-50/50 cursor-pointer transition-colors ${!notification.read ? 'bg-blue-50/30' : 'bg-white'
                 }`}
         >
             <div className="flex gap-3">
@@ -128,7 +128,7 @@ export function NotificationItem({ notification, onMarkAsRead, onActionComplete 
                             className="w-10 h-10 rounded-full object-cover"
                         />
                     ) : (
-                        <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
                             {getNotificationIcon()}
                         </div>
                     )}
@@ -142,12 +142,12 @@ export function NotificationItem({ notification, onMarkAsRead, onActionComplete 
                     </p>
 
                     {poolName && (notification.type === 'pool_invite' || notification.type === 'bill_added' || notification.type === 'payment_received') && (
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs text-gray-600 mt-1">
                             Pool: {poolName}
                         </p>
                     )}
 
-                    <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1 mt-1 text-xs text-gray-500">
                         <Clock className="h-3 w-3" />
                         <span>{formatDistanceToNow(notification.createdAt, { addSuffix: true })}</span>
                     </div>
@@ -178,7 +178,7 @@ export function NotificationItem({ notification, onMarkAsRead, onActionComplete 
                     )}
 
                     {actionTaken && notification.type === 'pool_invite' && (
-                        <p className="text-xs text-muted-foreground mt-2 italic">
+                        <p className="text-xs text-gray-500 mt-2 italic">
                             You responded to this invitation
                         </p>
                     )}
@@ -186,7 +186,7 @@ export function NotificationItem({ notification, onMarkAsRead, onActionComplete 
 
                 {!notification.read && (
                     <div className="flex-shrink-0">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                     </div>
                 )}
             </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { CldUploadWidget } from 'next-cloudinary';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Upload, X } from 'lucide-react';
 import { Button } from './Button';
 
@@ -19,6 +19,11 @@ export function ImageUpload({
     uploadPreset = 'circlestay_listings'
 }: ImageUploadProps) {
     const [images, setImages] = useState<string[]>(value);
+
+    // Sync local state with parent value prop
+    useEffect(() => {
+        setImages(value);
+    }, [value]);
 
     const handleUpload = (result: any) => {
         const newUrl = result.info.secure_url;

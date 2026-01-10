@@ -100,15 +100,15 @@ export function NotificationCenter() {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-96 bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50">
-                    <div className="p-4 border-b border-border">
-                        <h3 className="font-semibold text-lg">Notifications</h3>
+                <div className="absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-2xl overflow-hidden z-50 border border-gray-200">
+                    <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-white">
+                        <h3 className="font-semibold text-lg text-gray-900">Notifications</h3>
                     </div>
 
-                    <div className="max-h-96 overflow-y-auto">
+                    <div className="max-h-96 overflow-y-auto bg-white">
                         {loading ? (
                             <div className="p-8 text-center">
-                                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+                                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-orange-500 border-r-transparent"></div>
                             </div>
                         ) : notifications.length > 0 ? (
                             notifications.map((notification) => (
@@ -120,7 +120,7 @@ export function NotificationCenter() {
                                 />
                             ))
                         ) : (
-                            <div className="p-8 text-center text-muted-foreground">
+                            <div className="p-8 text-center text-gray-500">
                                 <Bell className="h-12 w-12 mx-auto mb-2 opacity-50" />
                                 <p>No notifications yet</p>
                             </div>
