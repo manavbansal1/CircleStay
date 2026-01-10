@@ -7,18 +7,25 @@
     padding: 3rem 1.5rem;
 }
 
-.container {
-    max-width: 80rem;
+@media (min-width: 768px) {
+    .page {
+        padding: 4rem 1.5rem;
+    }
+}
+
+.wrapper {
     margin: 0 auto;
+    max-width: 80rem;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 3rem;
 }
 
 .header {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    justify-content: space-between;
+    gap: 1.5rem;
     animation: fadeInUp 0.6s ease-out;
 }
 
@@ -34,7 +41,14 @@
     }
 }
 
-.title {
+@media (min-width: 768px) {
+    .header {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.headerText h1 {
     font-size: 2.25rem;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -42,23 +56,211 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    margin-bottom: 0.5rem;
 }
 
 @media (min-width: 768px) {
-    .title {
+    .headerText h1 {
         font-size: 3rem;
     }
 }
 
-.description {
+.headerText p {
     color: hsl(25, 5%, 45%);
     font-size: 1.125rem;
+}
+
+/* Main Content Layout */
+.mainContent {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (min-width: 1024px) {
+    .mainContent {
+        grid-template-columns: 280px 1fr;
+    }
+}
+
+/* Sidebar Filters */
+.sidebar {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 46, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 2rem;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.filterSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.filterHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(139, 92, 46, 0.1);
+}
+
+.filterHeader h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: hsl(25, 45%, 25%);
+}
+
+.clearButton {
+    font-size: 0.875rem;
+    color: hsl(25, 70%, 50%);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.clearButton:hover {
+    color: hsl(20, 80%, 60%);
+}
+
+.filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.filterGroup label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: hsl(25, 20%, 35%);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.searchInput {
+    width: 100%;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    border-radius: 0.5rem;
+    border: 2px solid rgba(139, 92, 46, 0.2);
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: hsl(25, 70%, 50%);
+    box-shadow: 0 0 0 3px rgba(203, 134, 82, 0.1);
+}
+
+.clearInputButton {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.25rem;
+    color: hsl(25, 5%, 45%);
+    transition: color 0.2s;
+}
+
+.clearInputButton:hover {
+    color: hsl(25, 45%, 35%);
+}
+
+.filterOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filterOption,
+.filterOptionActive {
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.filterOption {
+    background: rgba(255, 255, 255, 0.5);
+    color: hsl(25, 20%, 35%);
+    border: 1px solid rgba(139, 92, 46, 0.15);
+}
+
+.filterOption:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: hsl(25, 70%, 50%);
+}
+
+.filterOptionActive {
+    background: linear-gradient(135deg, hsl(25, 70%, 50%), hsl(20, 80%, 60%));
+    color: white;
+    border: 1px solid hsl(25, 70%, 50%);
+    box-shadow: 0 2px 8px rgba(203, 134, 82, 0.3);
+}
+
+.priceRange {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.priceInputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.priceInput {
+    flex: 1;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    border-radius: 0.5rem;
+    border: 2px solid rgba(139, 92, 46, 0.2);
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.priceInput:focus {
+    outline: none;
+    border-color: hsl(25, 70%, 50%);
+    box-shadow: 0 0 0 3px rgba(203, 134, 82, 0.1);
+}
+
+/* Content Area */
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.resultsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resultsCount {
+    font-size: 0.875rem;
+    color: hsl(25, 5%, 45%);
+    font-weight: 500;
 }
 
 .grid {
     display: grid;
     gap: 1.5rem;
-    animation: fadeInUp 0.6s ease-out 0.2s both;
+    grid-template-columns: 1fr;
 }
 
 @media (min-width: 640px) {
@@ -67,34 +269,43 @@
     }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
     .grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-/* Glassmorphic card wrapper */
-.cardWrapper {
-    transition: all 0.3s ease;
-    animation: fadeInUp 0.6s ease-out both;
+/* Loading State */
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 0;
+    gap: 1rem;
+    color: hsl(25, 5%, 45%);
 }
 
-.cardWrapper:nth-child(1) {
-    animation-delay: 0.1s;
+/* Empty State */
+.emptyState {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 46, 0.1);
+    border-radius: 1rem;
+    max-width: 32rem;
+    margin: 0 auto;
 }
 
-.cardWrapper:nth-child(2) {
-    animation-delay: 0.2s;
+.emptyState h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: hsl(25, 45%, 25%);
 }
 
-.cardWrapper:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.cardWrapper:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-.cardWrapper:hover {
-    transform: translateY(-8px);
+.emptyState p {
+    color: hsl(25, 5%, 45%);
+    margin-bottom: 1.5rem;
 }

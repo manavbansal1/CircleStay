@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { getUserProfile, getUserListings } from '@/lib/firestore';
+import { getUserProfile, getUserListings, verifyUserID } from '@/lib/firestore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Button } from '@/components/Button';
 import { ProfileImageUpload } from '@/components/ProfileImageUpload';
-import { Edit, MapPin, Briefcase, DollarSign } from 'lucide-react';
+import { Edit, MapPin, Briefcase, DollarSign, ShieldCheck, Star } from 'lucide-react';
 import type { UserProfile, Listing } from '@/lib/firestore';
 import styles from './page.module.css';
 
@@ -17,6 +17,7 @@ export default function ProfilePage() {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [listings, setListings] = useState<Listing[]>([]);
     const [loading, setLoading] = useState(true);
+    const [verifying, setVerifying] = useState(false);
 
     useEffect(() => {
         async function loadProfile() {
@@ -37,7 +38,28 @@ export default function ProfilePage() {
 
         loadProfile();
     }, [user]);
+const handleVerifyID = async () => {
+        if (!user) return;
 
+        setVerifying(true);
+        try {
+            // Mock ID verification - in production this would be a real verification process
+            await verifyUserID(user.uid);
+            
+            // Reload profile to show updated verification status
+            const updatedProfile = await getUserProfile(user.uid);
+            setProfile(updatedProfile);
+            
+            alert('ID Verification Successful! Your trust score has been updated.');
+        } catch (error) {
+            console.error('Error verifying ID:', error);
+            alert('Failed to verify ID. Please try again.');
+        } finally {
+            setVerifying(false);
+        }
+    };
+
+    
     if (loading) {
         return (
             <ProtectedRoute>
@@ -109,10 +131,39 @@ export default function ProfilePage() {
                                         <span className={styles.statLabel}>Trust Score</span>
                                         <span className={styles.statValue}>{profile.trustScore}</span>
                                     </div>
+                                    {profile.averageRating > 0 && (
+                                        <div className={styles.stat}>
+                                            <span className={styles.statLabel}>Rating</span>
+                                            <span className={styles.statValue}>
+                                                <Star className="inline h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                                                {profile.averageRating.toFixed(1)} ({profile.ratingsCount})
+                                            </span>
+                                        </div>
+                                    )}
                                     <div className={styles.stat}>
                                         <span className={styles.statLabel}>Listings</span>
                                         <span className={styles.statValue}>{listings.length}</span>
                                     </div>
+                                </div>
+
+                                {/* ID Verification */}
+                                <div className="mt-4">
+                                    {profile.idVerified ? (
+                                        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/30">
+                                            <ShieldCheck className="h-5 w-5 text-green-500" />
+                                            <span className="text-sm font-medium text-green-700">ID Verified</span>
+                                        </div>
+                                    ) : (
+                                        <Button
+                                            onClick={handleVerifyID}
+                                            disabled={verifying}
+                                            variant="outline"
+                                            className="gap-2 w-full"
+                                        >
+                                            <ShieldCheck className="h-4 w-4" />
+                                            {verifying ? 'Verifying...' : 'Verify Government ID (+20 Trust Score)'}
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         </div>

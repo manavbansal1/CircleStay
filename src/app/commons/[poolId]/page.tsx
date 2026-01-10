@@ -8,6 +8,7 @@ import { Avatar } from "@/components/Avatar";
 import { Badge } from "@/components/Badge";
 import { AddBillModal } from "@/components/AddBillModal";
 import { InviteMembersModal } from "@/components/InviteMembersModal";
+import { RateUserModal } from "@/components/RateUserModal";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import {
     ArrowLeft,
@@ -21,7 +22,8 @@ import {
     MoreVertical,
     Loader2,
     TrendingUp,
-    TrendingDown
+    TrendingDown,
+    Star
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -32,7 +34,7 @@ import {
     type Bill,
     type Balance
 } from "@/lib/firestore-pools";
-import { getUserProfile } from "@/lib/firestore";
+import { getUserProfile, canRateUser, type UserProfile } from "@/lib/firestore";
 
 export default function PoolDetailPage() {
     const params = useParams();
@@ -44,9 +46,12 @@ export default function PoolDetailPage() {
     const [bills, setBills] = useState<Bill[]>([]);
     const [balances, setBalances] = useState<Map<string, Balance>>(new Map());
     const [memberNames, setMemberNames] = useState<Record<string, string>>({});
+    const [memberPhotos, setMemberPhotos] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
     const [showAddBillModal, setShowAddBillModal] = useState(false);
     const [showInviteModal, setShowInviteModal] = useState(false);
+    const [showRateModal, setShowRateModal] = useState(false);
+    const [ratingTarget, setRatingTarget] = useState<{ userId: string; billId?: string } | null>(null);
 
     const loadPoolData = async () => {
         if (!poolId) return;
@@ -63,14 +68,17 @@ export default function PoolDetailPage() {
             setBills(billsData);
             setBalances(balancesData);
 
-            // Load member names
+            // Load member names and photos
             if (poolData) {
                 const names: Record<string, string> = {};
+                const photos: Record<string, string> = {};
                 for (const memberId of poolData.memberIds) {
                     const profile = await getUserProfile(memberId);
                     names[memberId] = profile?.displayName || profile?.email || "Unknown";
+                    photos[memberId] = profile?.photoURL || "";
                 }
                 setMemberNames(names);
+                setMemberPhotos(photos);
             }
         } catch (error) {
             console.error("Error loading pool data:", error);
@@ -82,6 +90,26 @@ export default function PoolDetailPage() {
     useEffect(() => {
         loadPoolData();
     }, [poolId]);
+
+    const handleRateUser = async (userId: string, billId?: string) => {
+        if (!user) return;
+        
+        // Check if user can rate
+        const canRate = await canRateUser(user.uid, userId, billId);
+        if (!canRate) {
+            alert('You have already rated this user for this payment.');
+            return;
+        }
+
+        setRatingTarget({ userId, billId });
+        setShowRateModal(true);
+    };
+
+    const handleRatingSubmitted = () => {
+        setShowRateModal(false);
+        setRatingTarget(null);
+        loadPoolData(); // Reload to update any trust scores
+    };
 
     const handleBillAdded = () => {
         loadPoolData();
@@ -322,33 +350,45 @@ export default function PoolDetailPage() {
                                 <CardContent className="space-y-3">
                                     {pool.memberIds.map((memberId) => {
                                         const memberBalance = balances.get(memberId);
+                                        const isCurrentUser = memberId === user?.uid;
                                         return (
-                                            <div key={memberId} className="flex items-center justify-between">
-                                                <div className="flex items-center gap-2">
+                                            <div key={memberId} className="flex items-center justify-between p-2 rounded-lg hover:bg-secondary/30 transition-colors">
+                                                <div className="flex items-center gap-2 flex-1">
                                                     <Avatar
-                                                        src={undefined}
+                                                        src={memberPhotos[memberId]}
                                                         alt={memberNames[memberId] || memberId}
                                                         className="h-10 w-10"
                                                     />
-                                                    <div>
+                                                    <div className="flex-1">
                                                         <p className="font-medium text-sm">
                                                             {memberNames[memberId] || memberId}
-                                                            {memberId === user?.uid && " (You)"}
+                                                            {isCurrentUser && " (You)"}
                                                         </p>
+                                                        <span
+                                                            className={`text-xs font-semibold ${(memberBalance?.netBalance || 0) > 0
+                                                                ? "text-green-500"
+                                                                : (memberBalance?.netBalance || 0) < 0
+                                                                    ? "text-destructive"
+                                                                    : "text-muted-foreground"
+                                                                }`}
+                                                        >
+                                                            ${Math.abs(memberBalance?.netBalance || 0).toFixed(2)}
+                                                            {(memberBalance?.netBalance || 0) > 0 && " owed"}
+                                                            {(memberBalance?.netBalance || 0) < 0 && " owes"}
+                                                        </span>
                                                     </div>
                                                 </div>
-                                                <div className="text-right">
-                                                    <span
-                                                        className={`text-sm font-semibold ${(memberBalance?.netBalance || 0) > 0
-                                                            ? "text-green-500"
-                                                            : (memberBalance?.netBalance || 0) < 0
-                                                                ? "text-destructive"
-                                                                : "text-muted-foreground"
-                                                            }`}
+                                                {!isCurrentUser && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => handleRateUser(memberId)}
+                                                        className="gap-1"
                                                     >
-                                                        ${Math.abs(memberBalance?.netBalance || 0).toFixed(2)}
-                                                    </span>
-                                                </div>
+                                                        <Star className="h-3 w-3" />
+                                                        Rate
+                                                    </Button>
+                                                )}
                                             </div>
                                         );
                                     })}
@@ -408,6 +448,24 @@ export default function PoolDetailPage() {
                         currentUserId={user.uid}
                         onMembersInvited={loadPoolData}
                     />
+
+                    {ratingTarget && (
+                        <RateUserModal
+                            isOpen={showRateModal}
+                            onClose={() => {
+                                setShowRateModal(false);
+                                setRatingTarget(null);
+                            }}
+                            raterId={user.uid}
+                            ratedUserId={ratingTarget.userId}
+                            ratedUserName={memberNames[ratingTarget.userId] || "User"}
+                            ratedUserPhoto={memberPhotos[ratingTarget.userId]}
+                            poolId={poolId}
+                            billId={ratingTarget.billId}
+                            category="payment"
+                            onRatingSubmitted={handleRatingSubmitted}
+                        />
+                    )}
                 </>
             )}
         </ProtectedRoute>

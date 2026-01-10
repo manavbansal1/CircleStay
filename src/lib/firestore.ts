@@ -30,6 +30,10 @@ export interface UserProfile {
     bio?: string;
     occupation?: string;
     trustScore: number;
+    idVerified: boolean;
+    idVerificationDate?: Date;
+    ratingsCount: number;
+    averageRating: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -47,6 +51,7 @@ export interface Listing {
     bathrooms: number;
     amenities: string[];
     availableFrom: Date;
+    type?: string;
     vouchCount: number;
     connectionType: 'Direct' | '2nd Degree' | '3rd Degree';
     createdAt: Date;
@@ -61,6 +66,19 @@ export interface Review {
     rating: number;
     comment: string;
     type: 'tenant' | 'landlord';
+    createdAt: Date;
+}
+
+// User Rating Types (for pool members)
+export interface UserRating {
+    id: string;
+    raterId: string;
+    ratedUserId: string;
+    poolId?: string;
+    billId?: string;
+    rating: number; // 1-5
+    comment?: string;
+    category: 'payment' | 'reliability' | 'communication' | 'general';
     createdAt: Date;
 }
 
@@ -97,6 +115,9 @@ export async function createUserProfile(uid: string, data: Partial<UserProfile>)
     await setDoc(userRef, {
         uid,
         trustScore: 50,
+        idVerified: false,
+        ratingsCount: 0,
+        averageRating: 0,
         createdAt: now,
         updatedAt: now,
         ...data
@@ -260,16 +281,19 @@ export async function createNotification(data: Omit<Notification, 'id' | 'create
 
 export async function getUserNotifications(userId: string): Promise<Notification[]> {
     const notificationsRef = collection(db, 'notifications');
-    const q = query(notificationsRef, where('recipientId', '==', userId), orderBy('createdAt', 'desc'));
+    const q = query(notificationsRef, where('recipientId', '==', userId));
     const querySnapshot = await getDocs(q);
 
-    return querySnapshot.docs.map(doc => {
+    const notifications = querySnapshot.docs.map(doc => {
         const data = doc.data();
         return {
             ...data,
             createdAt: data.createdAt?.toDate()
         } as Notification;
     });
+
+    // Sort by createdAt in descending order (newest first)
+    return notifications.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 }
 
 export async function markNotificationAsRead(notificationId: string) {
@@ -321,4 +345,130 @@ export async function updateViewingRequestStatus(requestId: string, status: 'acc
     await updateDoc(requestRef, {
         status
     });
+}
+
+// User Rating Functions
+export async function addUserRating(data: {
+    raterId: string;
+    ratedUserId: string;
+    rating: number;
+    comment?: string;
+    category: 'payment' | 'reliability' | 'communication' | 'general';
+    poolId?: string;
+    billId?: string;
+}): Promise<string> {
+    // Check if rating already exists for this bill (prevent duplicate ratings)
+    if (data.billId) {
+        const ratingsRef = collection(db, 'userRatings');
+        const existingQuery = query(
+            ratingsRef,
+            where('raterId', '==', data.raterId),
+            where('ratedUserId', '==', data.ratedUserId),
+            where('billId', '==', data.billId)
+        );
+        const existingSnapshot = await getDocs(existingQuery);
+        
+        if (!existingSnapshot.empty) {
+            throw new Error('You have already rated this user for this payment');
+        }
+    }
+
+    const ratingsRef = collection(db, 'userRatings');
+    const newRatingRef = doc(ratingsRef);
+
+    await setDoc(newRatingRef, {
+        ...data,
+        id: newRatingRef.id,
+        createdAt: new Date()
+    });
+
+    // Update the rated user's trust score
+    await updateUserTrustScore(data.ratedUserId);
+
+    return newRatingRef.id;
+}
+
+export async function getUserRatings(userId: string): Promise<UserRating[]> {
+    const ratingsRef = collection(db, 'userRatings');
+    const q = query(ratingsRef, where('ratedUserId', '==', userId), orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+            ...data,
+            createdAt: data.createdAt?.toDate()
+        } as UserRating;
+    });
+}
+
+export async function updateUserTrustScore(userId: string): Promise<void> {
+    const ratings = await getUserRatings(userId);
+    const userProfile = await getUserProfile(userId);
+
+    if (!userProfile) return;
+
+    // Calculate average rating
+    const averageRating = ratings.length > 0
+        ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length
+        : 0;
+
+    // Base trust score calculation:
+    // - Start with 50 base points
+    // - ID verification: +20 points
+    // - Average rating: (rating / 5) * 30 points (max 30 points)
+    // - Number of ratings bonus: min(ratingsCount * 2, 20) (max 20 points)
+    
+    let trustScore = 50;
+
+    // ID verification bonus
+    if (userProfile.idVerified) {
+        trustScore += 20;
+    }
+
+    // Rating score (0-30 points)
+    trustScore += (averageRating / 5) * 30;
+
+    // Activity bonus based on number of ratings (0-20 points)
+    const activityBonus = Math.min(ratings.length * 2, 20);
+    trustScore += activityBonus;
+
+    // Round to nearest integer
+    trustScore = Math.round(trustScore);
+
+    // Update user profile
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+        trustScore,
+        averageRating,
+        ratingsCount: ratings.length,
+        updatedAt: new Date()
+    });
+}
+
+export async function verifyUserID(userId: string): Promise<void> {
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+        idVerified: true,
+        idVerificationDate: new Date(),
+        updatedAt: new Date()
+    });
+
+    // Recalculate trust score with ID verification bonus
+    await updateUserTrustScore(userId);
+}
+
+export async function canRateUser(raterId: string, ratedUserId: string, billId?: string): Promise<boolean> {
+    if (!billId) return true;
+
+    const ratingsRef = collection(db, 'userRatings');
+    const q = query(
+        ratingsRef,
+        where('raterId', '==', raterId),
+        where('ratedUserId', '==', ratedUserId),
+        where('billId', '==', billId)
+    );
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.empty;
 }

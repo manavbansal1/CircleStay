@@ -19,6 +19,8 @@ export default function CreateListingPage() {
     const [amenities, setAmenities] = useState('');
     const [images, setImages] = useState<string[]>([]);
     const [availableFrom, setAvailableFrom] = useState('');
+    const [propertyType, setPropertyType] = useState('apartment');
+    const [connectionType, setConnectionType] = useState<'Direct' | '2nd Degree' | '3rd Degree'>('Direct');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { user } = useAuth();
@@ -53,7 +55,8 @@ export default function CreateListingPage() {
                 bathrooms: parseInt(bathrooms),
                 amenities: amenities.split(',').map(a => a.trim()).filter(a => a),
                 availableFrom: new Date(availableFrom),
-                connectionType: 'Direct'
+                type: propertyType,
+                connectionType: connectionType
             });
 
             router.push('/marketplace');
@@ -142,6 +145,39 @@ export default function CreateListingPage() {
                         {/* Property Details */}
                         <div className={styles.section}>
                             <h2 className={styles.sectionTitle}>Property Details</h2>
+                            <div className={styles.grid}>
+                                <div className={styles.inputGroup}>
+                                    <label htmlFor="propertyType" className={styles.label}>Property Type *</label>
+                                    <select
+                                        id="propertyType"
+                                        value={propertyType}
+                                        onChange={(e) => setPropertyType(e.target.value)}
+                                        className={styles.select}
+                                        required
+                                    >
+                                        <option value="apartment">Apartment</option>
+                                        <option value="house">House</option>
+                                        <option value="room">Room</option>
+                                        <option value="studio">Studio</option>
+                                    </select>
+                                </div>
+
+                                <div className={styles.inputGroup}>
+                                    <label htmlFor="connectionType" className={styles.label}>Connection Type *</label>
+                                    <select
+                                        id="connectionType"
+                                        value={connectionType}
+                                        onChange={(e) => setConnectionType(e.target.value as 'Direct' | '2nd Degree' | '3rd Degree')}
+                                        className={styles.select}
+                                        required
+                                    >
+                                        <option value="Direct">Direct Network</option>
+                                        <option value="2nd Degree">Friends of Friends</option>
+                                        <option value="3rd Degree">Extended Network</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
                             <div className={styles.grid}>
                                 <div className={styles.inputGroup}>
                                     <label htmlFor="bedrooms" className={styles.label}>Bedrooms *</label>
