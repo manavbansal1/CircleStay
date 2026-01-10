@@ -1,10 +1,10 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/Card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/Card"
 import { Button } from "@/components/Button"
-import { Badge } from "@/components/Badge"
 import { Avatar } from "@/components/Avatar"
 import { Plus, Wifi, ShoppingBag, Tv, Music } from "lucide-react"
+import styles from "./page.module.css"
 
 const pools = [
     {
@@ -63,51 +63,51 @@ const pools = [
 
 export default function CommonsPage() {
     return (
-        <div className="container py-8 md:py-12">
-            <div className="mx-auto max-w-5xl space-y-8">
-                <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold md:text-4xl">Commons Pool</h1>
-                        <p className="mt-2 text-muted-foreground">Automated cost splitting for your circle.</p>
+        <div className={styles.container}>
+            <div className={styles.wrapper}>
+                <div className={styles.header}>
+                    <div className={styles.headerText}>
+                        <h1>Commons Pool</h1>
+                        <p>Automated cost splitting for your circle.</p>
                     </div>
                     <Button className="gap-2">
                         <Plus className="h-4 w-4" /> New Pool
                     </Button>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className={styles.grid}>
                     {pools.map((pool) => (
-                        <Card key={pool.id} className="flex flex-col">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-base font-medium">
+                        <Card key={pool.id} className={styles.poolCard}>
+                            <CardHeader className={styles.poolHeader}>
+                                <CardTitle className={styles.poolTitle}>
                                     {pool.name}
                                 </CardTitle>
-                                <pool.icon className="h-4 w-4 text-muted-foreground" />
+                                <pool.icon className={styles.poolIcon} />
                             </CardHeader>
-                            <CardContent className="mt-4 flex-1">
-                                <div className="text-2xl font-bold">
+                            <CardContent className={styles.poolContent}>
+                                <div className={styles.poolPrice}>
                                     ${(pool.totalCost / pool.members.length).toFixed(2)}
-                                    <span className="text-xs font-normal text-muted-foreground">/mo per person</span>
+                                    <span className={styles.poolPriceUnit}>/mo per person</span>
                                 </div>
-                                <p className="text-xs text-muted-foreground">
+                                <p className={styles.poolDetails}>
                                     Total: ${pool.totalCost}/mo • Next: {pool.nextPayment}
                                 </p>
 
-                                <div className="mt-6">
-                                    <div className="mb-2 text-xs font-medium text-muted-foreground">Members ({pool.members.length}/{pool.maxMembers})</div>
-                                    <div className="flex -space-x-2">
+                                <div className={styles.membersSection}>
+                                    <div className={styles.membersLabel}>Members ({pool.members.length}/{pool.maxMembers})</div>
+                                    <div className={styles.membersGrid}>
                                         {pool.members.map((member, i) => (
                                             <Avatar key={i} src={member.image || undefined} fallback={member.name[0]} className="border-2 border-background" />
                                         ))}
                                         {Array.from({ length: pool.maxMembers - pool.members.length }).map((_, i) => (
-                                            <div key={`empty-${i}`} className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-dashed border-muted bg-transparent text-muted-foreground">
+                                            <div key={`empty-${i}`} className={styles.emptySlot}>
                                                 <Plus className="h-4 w-4" />
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="mt-6">
+                                <div className={styles.poolActions}>
                                     <Button variant={pool.status === "Open Spot" ? "default" : "outline"} className="w-full">
                                         {pool.status === "Open Spot" ? "Join Pool" : "Manage"}
                                     </Button>
