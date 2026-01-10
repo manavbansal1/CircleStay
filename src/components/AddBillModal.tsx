@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { Avatar } from "./Avatar";
@@ -29,7 +29,7 @@ export function AddBillModal({ isOpen, onClose, pool, currentUserId, onBillAdded
     const [memberNames, setMemberNames] = useState<Record<string, string>>({});
 
     // Load member names
-    useState(() => {
+    useEffect(() => {
         const loadMemberNames = async () => {
             const names: Record<string, string> = {};
             for (const memberId of pool.memberIds) {
@@ -41,7 +41,7 @@ export function AddBillModal({ isOpen, onClose, pool, currentUserId, onBillAdded
         if (isOpen) {
             loadMemberNames();
         }
-    });
+    }, [isOpen, pool.memberIds]);
 
     const categories = ["General", "Groceries", "Utilities", "Rent", "Entertainment", "Transportation", "Other"];
 

@@ -102,6 +102,7 @@ export async function getPool(poolId: string): Promise<Pool | null> {
         const data = poolSnap.data();
         return {
             ...data,
+            id: poolSnap.id, // Ensure ID is always set from document ID
             createdAt: data.createdAt?.toDate(),
             updatedAt: data.updatedAt?.toDate()
         } as Pool;
@@ -123,6 +124,7 @@ export async function getUserPools(userId: string): Promise<Pool[]> {
         const data = doc.data();
         return {
             ...data,
+            id: doc.id, // Ensure ID is always set from document ID
             createdAt: data.createdAt?.toDate(),
             updatedAt: data.updatedAt?.toDate()
         } as Pool;
@@ -280,19 +282,22 @@ export async function getPoolBills(poolId: string): Promise<Bill[]> {
     const billsRef = collection(db, 'bills');
     const q = query(
         billsRef,
-        where('poolId', '==', poolId),
-        orderBy('date', 'desc')
+        where('poolId', '==', poolId)
     );
     const querySnapshot = await getDocs(q);
 
-    return querySnapshot.docs.map(doc => {
+    const bills = querySnapshot.docs.map(doc => {
         const data = doc.data();
         return {
             ...data,
+            id: doc.id,
             date: data.date?.toDate(),
             createdAt: data.createdAt?.toDate()
         } as Bill;
     });
+
+    // Sort by date in descending order (newest first)
+    return bills.sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
 export async function getBill(billId: string): Promise<Bill | null> {

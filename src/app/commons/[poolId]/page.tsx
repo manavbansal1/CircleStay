@@ -123,8 +123,8 @@ export default function PoolDetailPage() {
 
     return (
         <ProtectedRoute>
-            <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
-                <div className="container max-w-6xl py-8 space-y-6">
+            <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10 px-6 py-12">
+                <div className="max-w-7xl mx-auto space-y-6">
                     {/* Header */}
                     <div className="flex items-start justify-between gap-4">
                         <div className="flex items-start gap-4">
