@@ -1,0 +1,297 @@
+/* CircleStay Navbar Glassmorphism Styles */
+
+.navbar-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 86, 60, 0.1);
+    /* Brown with low opacity */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.navbar-glass.scrolled {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 16px 0 rgba(139, 86, 60, 0.12);
+    border-bottom-color: rgba(139, 86, 60, 0.15);
+}
+
+/* Dark mode support */
+.dark .navbar-glass {
+    background: rgba(30, 20, 18, 0.8);
+    border-bottom-color: rgba(139, 86, 60, 0.2);
+}
+
+.dark .navbar-glass.scrolled {
+    background: rgba(30, 20, 18, 0.95);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Logo Container */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logo-container:hover {
+    transform: translateY(-2px);
+}
+
+.logo-image {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, hsl(25, 45%, 45%) 0%, hsl(20, 60%, 65%) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(139, 86, 60, 0.25);
+    transition: all 0.3s ease;
+}
+
+.logo-container:hover .logo-image {
+    box-shadow: 0 6px 20px rgba(139, 86, 60, 0.35);
+    transform: rotate(-5deg) scale(1.05);
+}
+
+.logo-text {
+    font-size: 1.375rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, hsl(25, 45%, 45%) 0%, hsl(20, 60%, 65%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.025em;
+}
+
+/* Navigation Links */
+.nav-link {
+    position: relative;
+    padding: 0.625rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, hsl(25, 45%, 45%) 0%, hsl(20, 60%, 65%) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+    border-radius: 0.5rem;
+}
+
+.nav-link-active {
+    color: hsl(40, 20%, 97%);
+    background: linear-gradient(135deg, hsl(25, 45%, 45%) 0%, hsl(20, 60%, 65%) 100%);
+    box-shadow: 0 4px 12px rgba(139, 86, 60, 0.3);
+}
+
+.nav-link-inactive {
+    color: hsl(25, 10%, 15%);
+}
+
+.dark .nav-link-inactive {
+    color: hsl(35, 30%, 92%);
+}
+
+.nav-link-inactive:hover {
+    background: rgba(139, 86, 60, 0.08);
+    color: hsl(25, 45%, 45%);
+    transform: translateY(-1px);
+}
+
+.dark .nav-link-inactive:hover {
+    background: rgba(139, 86, 60, 0.15);
+    color: hsl(25, 45%, 55%);
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(139, 86, 60, 0.08);
+}
+
+.dark .mobile-menu-btn:hover {
+    background: rgba(139, 86, 60, 0.15);
+}
+
+/* Explicitly hide hamburger menu on desktop/tablet screens */
+@media (min-width: 768px) {
+    .mobile-menu-btn {
+        display: none !important;
+    }
+}
+
+
+.hamburger-line {
+    width: 24px;
+    height: 2px;
+    background: hsl(25, 45%, 45%);
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+.dark .hamburger-line {
+    background: hsl(25, 45%, 55%);
+}
+
+/* Hamburger Animation */
+.mobile-menu-btn.open .hamburger-line-1 {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-btn.open .hamburger-line-2 {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.mobile-menu-btn.open .hamburger-line-3 {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile Navigation */
+.mobile-nav-container {
+    animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mobile-nav-menu {
+    padding: 1rem 0 1.5rem 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.dark .mobile-nav-menu {
+    background: rgba(30, 20, 18, 0.95);
+}
+
+.mobile-nav-link {
+    display: block;
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    margin: 0 0.5rem;
+}
+
+.mobile-nav-link-active {
+    color: hsl(40, 20%, 97%);
+    background: linear-gradient(135deg, hsl(25, 45%, 45%) 0%, hsl(20, 60%, 65%) 100%);
+    box-shadow: 0 4px 12px rgba(139, 86, 60, 0.25);
+}
+
+.mobile-nav-link-inactive {
+    color: hsl(25, 10%, 15%);
+}
+
+.dark .mobile-nav-link-inactive {
+    color: hsl(35, 30%, 92%);
+}
+
+.mobile-nav-link-inactive:hover {
+    background: rgba(139, 86, 60, 0.08);
+    color: hsl(25, 45%, 45%);
+    transform: translateX(4px);
+}
+
+.dark .mobile-nav-link-inactive:hover {
+    background: rgba(139, 86, 60, 0.15);
+    color: hsl(25, 45%, 55%);
+}
+
+/* User Profile Section */
+.user-profile-section {
+    border-top: 1px solid rgba(139, 86, 60, 0.15);
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Notification Badge */
+.notification-badge {
+    position: relative;
+}
+
+.notification-badge::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: hsl(20, 60%, 65%);
+    border: 2px solid hsl(0, 0%, 100%);
+    border-radius: 50%;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.dark .notification-badge::after {
+    border-color: hsl(25, 20%, 12%);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Focus visible for accessibility */
+.nav-link:focus-visible,
+.mobile-nav-link:focus-visible,
+.mobile-menu-btn:focus-visible {
+    outline: 2px solid hsl(25, 45%, 45%);
+    outline-offset: 2px;
+}
