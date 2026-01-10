@@ -1,0 +1,188 @@
+.page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg,
+            hsl(40, 20%, 97%) 0%,
+            hsl(35, 30%, 95%) 50%,
+            hsl(40, 20%, 97%) 100%);
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.backgroundCircle1 {
+    position: absolute;
+    top: -5rem;
+    left: -5rem;
+    width: 20rem;
+    height: 20rem;
+    background: hsl(25, 45%, 45%, 0.1);
+    border-radius: 9999px;
+    filter: blur(80px);
+    animation: float 8s ease-in-out infinite;
+}
+
+.backgroundCircle2 {
+    position: absolute;
+    bottom: -5rem;
+    right: -5rem;
+    width: 25rem;
+    height: 25rem;
+    background: hsl(20, 60%, 65%, 0.1);
+    border-radius: 9999px;
+    filter: blur(100px);
+    animation: float 10s ease-in-out infinite;
+    animation-delay: 1s;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-30px) scale(1.05);
+    }
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 28rem;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1rem;
+    object-fit: contain;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, hsl(25, 45%, 45%), hsl(20, 60%, 65%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: hsl(25, 5%, 45%);
+    font-size: 0.875rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: hsl(25, 10%, 15%);
+}
+
+.input {
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid hsl(25, 15%, 85%);
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.input:focus {
+    outline: none;
+    border-color: hsl(25, 45%, 45%);
+    box-shadow: 0 0 0 3px hsl(25, 45%, 45%, 0.1);
+}
+
+.error {
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: rgb(185, 28, 28);
+    font-size: 0.875rem;
+}
+
+.submitButton {
+    margin-top: 0.5rem;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.dividerLine {
+    flex: 1;
+    height: 1px;
+    background: hsl(25, 15%, 85%);
+}
+
+.dividerText {
+    font-size: 0.875rem;
+    color: hsl(25, 5%, 45%);
+}
+
+.footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: hsl(25, 5%, 45%);
+}
+
+.link {
+    color: hsl(25, 45%, 45%);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.link:hover {
+    color: hsl(20, 60%, 65%);
+}

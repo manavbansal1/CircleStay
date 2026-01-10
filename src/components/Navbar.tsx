@@ -2,11 +2,24 @@
 
 import Link from "next/link"
 import { Button } from "@/components/Button"
-import { Menu, X } from "lucide-react"
+import { Menu, X, User, LogOut } from "lucide-react"
 import { useState } from "react"
+import { useAuth } from "@/contexts/AuthContext"
+import { useRouter } from "next/navigation"
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
+    const { user, signOut, loading } = useAuth()
+    const router = useRouter()
+
+    const handleSignOut = async () => {
+        try {
+            await signOut()
+            router.push('/')
+        } catch (error) {
+            console.error('Sign out error:', error)
+        }
+    }
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -41,10 +54,31 @@ export function Navbar() {
 
                 {/* Desktop CTA */}
                 <div className="hidden md:flex items-center space-x-4">
-                    <Button variant="ghost" size="sm">
-                        Sign In
-                    </Button>
-                    <Button size="sm">Get Started</Button>
+                    {loading ? (
+                        <div className="h-9 w-24 bg-secondary animate-pulse rounded-md" />
+                    ) : user ? (
+                        <>
+                            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50">
+                                <User className="h-4 w-4" />
+                                <span className="text-sm font-medium">{user.displayName || user.email}</span>
+                            </div>
+                            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                                <LogOut className="h-4 w-4 mr-2" />
+                                Sign Out
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Link href="/login">
+                                <Button variant="ghost" size="sm">
+                                    Sign In
+                                </Button>
+                            </Link>
+                            <Link href="/signup">
+                                <Button size="sm">Get Started</Button>
+                            </Link>
+                        </>
+                    )}
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -83,12 +117,31 @@ export function Navbar() {
                             Trust Score
                         </Link>
                         <div className="flex flex-col space-y-2 pt-4 border-t">
-                            <Button variant="ghost" size="sm" className="w-full">
-                                Sign In
-                            </Button>
-                            <Button size="sm" className="w-full">
-                                Get Started
-                            </Button>
+                            {user ? (
+                                <>
+                                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50">
+                                        <User className="h-4 w-4" />
+                                        <span className="text-sm font-medium">{user.displayName || user.email}</span>
+                                    </div>
+                                    <Button variant="ghost" size="sm" className="w-full" onClick={handleSignOut}>
+                                        <LogOut className="h-4 w-4 mr-2" />
+                                        Sign Out
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link href="/login" onClick={() => setIsOpen(false)}>
+                                        <Button variant="ghost" size="sm" className="w-full">
+                                            Sign In
+                                        </Button>
+                                    </Link>
+                                    <Link href="/signup" onClick={() => setIsOpen(false)}>
+                                        <Button size="sm" className="w-full">
+                                            Get Started
+                                        </Button>
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </nav>
                 </div>
