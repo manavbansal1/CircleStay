@@ -12,6 +12,7 @@
     "dev:all": "concurrently \"npm run dev\" \"npm run server:dev\""
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.8",
     "cloudinary": "^2.8.0",
     "clsx": "^2.1.1",
     "cookie-parser": "^1.4.7",

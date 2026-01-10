@@ -7,6 +7,7 @@ import { getUserProfile, updateUserProfile } from '@/lib/firestore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Button } from '@/components/Button';
 import { ProfileImageUpload } from '@/components/ProfileImageUpload';
+import { LocationAutocomplete } from '@/components/LocationAutocomplete';
 import type { UserProfile } from '@/lib/firestore';
 import styles from './page.module.css';
 
@@ -165,14 +166,12 @@ export default function EditProfilePage() {
                             </div>
 
                             <div className={styles.inputGroup}>
-                                <label htmlFor="location" className={styles.label}>Location</label>
-                                <input
-                                    id="location"
-                                    type="text"
+                                <LocationAutocomplete
                                     value={location}
-                                    onChange={(e) => setLocation(e.target.value)}
-                                    className={styles.input}
+                                    onChange={(address) => setLocation(address)}
+                                    label="Location"
                                     placeholder="San Francisco, CA"
+                                    className={styles.input}
                                 />
                             </div>
                         </div>

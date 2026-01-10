@@ -90,11 +90,11 @@ export default function TrustScorePage() {
     const activityBonus = Math.min(ratingsCount * 2, 20);
 
     const getTrustLevel = (score: number) => {
-        if (score >= 90) return { label: "Exceptional", color: "bg-purple-500 hover:bg-purple-600" };
-        if (score >= 80) return { label: "Excellent", color: "bg-green-500 hover:bg-green-600" };
-        if (score >= 70) return { label: "High Reliability", color: "bg-blue-500 hover:bg-blue-600" };
-        if (score >= 60) return { label: "Good Standing", color: "bg-yellow-500 hover:bg-yellow-600" };
-        return { label: "Building Trust", color: "bg-orange-500 hover:bg-orange-600" };
+        if (score >= 90) return { label: "Exceptional", color: "bg-gradient-to-r from-[hsl(25,55%,35%)] to-[hsl(20,70%,55%)] hover:from-[hsl(25,55%,32%)] hover:to-[hsl(20,70%,52%)]" };
+        if (score >= 80) return { label: "Excellent", color: "bg-gradient-to-r from-[hsl(25,50%,40%)] to-[hsl(20,65%,60%)] hover:from-[hsl(25,50%,37%)] hover:to-[hsl(20,65%,57%)]" };
+        if (score >= 70) return { label: "High Reliability", color: "bg-gradient-to-r from-[hsl(25,45%,45%)] to-[hsl(20,60%,65%)] hover:from-[hsl(25,45%,42%)] hover:to-[hsl(20,60%,62%)]" };
+        if (score >= 60) return { label: "Good Standing", color: "bg-gradient-to-r from-[hsl(30,40%,50%)] to-[hsl(25,55%,70%)] hover:from-[hsl(30,40%,47%)] hover:to-[hsl(25,55%,67%)]" };
+        return { label: "Building Trust", color: "bg-gradient-to-r from-[hsl(35,35%,55%)] to-[hsl(30,50%,75%)] hover:from-[hsl(35,35%,52%)] hover:to-[hsl(30,50%,72%)]" };
     };
 
     const trustLevel = getTrustLevel(profile.trustScore);

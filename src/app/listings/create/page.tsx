@@ -6,6 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { createListing } from '@/lib/firestore';
 import { Button } from '@/components/Button';
 import { ImageUpload } from '@/components/ImageUpload';
+import { LocationAutocomplete } from '@/components/LocationAutocomplete';
+import { MapView } from '@/components/MapView';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import styles from './page.module.css';
 
@@ -14,6 +16,8 @@ export default function CreateListingPage() {
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [location, setLocation] = useState('');
+    const [locationLat, setLocationLat] = useState<number | undefined>();
+    const [locationLng, setLocationLng] = useState<number | undefined>();
     const [bedrooms, setBedrooms] = useState('1');
     const [bathrooms, setBathrooms] = useState('1');
     const [amenities, setAmenities] = useState('');
@@ -117,17 +121,33 @@ export default function CreateListingPage() {
                             </div>
 
                             <div className={styles.inputGroup}>
-                                <label htmlFor="location" className={styles.label}>Location *</label>
-                                <input
-                                    id="location"
-                                    type="text"
+                                <LocationAutocomplete
                                     value={location}
-                                    onChange={(e) => setLocation(e.target.value)}
-                                    className={styles.input}
+                                    onChange={(address, lat, lng) => {
+                                        setLocation(address);
+                                        setLocationLat(lat);
+                                        setLocationLng(lng);
+                                    }}
+                                    label="Location"
                                     placeholder="Mission District, San Francisco, CA"
+                                    className={styles.input}
                                     required
                                 />
                             </div>
+
+                            {/* Map Preview */}
+                            {location && (
+                                <div className={styles.inputGroup}>
+                                    <label className={styles.label}>Location Preview</label>
+                                    <MapView
+                                        address={location}
+                                        lat={locationLat}
+                                        lng={locationLng}
+                                        height="300px"
+                                        zoom={14}
+                                    />
+                                </div>
+                            )}
 
                             <div className={styles.inputGroup}>
                                 <label htmlFor="description" className={styles.label}>Description *</label>

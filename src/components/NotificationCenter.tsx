@@ -101,14 +101,14 @@ export function NotificationCenter() {
 
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-2xl overflow-hidden z-50 border border-gray-200">
-                    <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-white">
+                    <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-[rgba(139,86,60,0.08)] to-white">
                         <h3 className="font-semibold text-lg text-gray-900">Notifications</h3>
                     </div>
 
                     <div className="max-h-96 overflow-y-auto bg-white">
                         {loading ? (
                             <div className="p-8 text-center">
-                                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-orange-500 border-r-transparent"></div>
+                                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[hsl(25,45%,45%)] border-r-transparent"></div>
                             </div>
                         ) : notifications.length > 0 ? (
                             notifications.map((notification) => (

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { createUserProfile } from '@/lib/firestore';
 import { Button } from '@/components/Button';
+import { LocationAutocomplete } from '@/components/LocationAutocomplete';
 import styles from './page.module.css';
 
 export default function OnboardingPage() {
@@ -122,15 +123,12 @@ export default function OnboardingPage() {
                                     </div>
 
                                     <div className={styles.inputGroup}>
-                                        <label htmlFor="location" className={styles.label}>Location *</label>
-                                        <input
-                                            id="location"
-                                            name="location"
-                                            type="text"
+                                        <LocationAutocomplete
                                             value={formData.location}
-                                            onChange={handleChange}
-                                            className={styles.input}
+                                            onChange={(address) => setFormData({ ...formData, location: address })}
+                                            label="Location"
                                             placeholder="San Francisco, CA"
+                                            className={styles.input}
                                             required
                                         />
                                     </div>
