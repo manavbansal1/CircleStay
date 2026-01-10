@@ -1,74 +1,82 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/Card"
+"use client"
+
+import { Card, CardContent } from "@/components/Card"
 import { Badge } from "@/components/Badge"
-import { Button } from "@/components/Button"
 import { Avatar } from "@/components/Avatar"
-import { MapPin, Users, Heart } from "lucide-react"
+import { MapPin, Users } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface ListingCardProps {
-    image: string
+    id?: string
     title: string
     price: number
     location: string
     vouchCount: number
     connectionType: "Direct" | "2nd Degree" | "3rd Degree"
     hostName: string
-    hostImage?: string
+    image: string
+    hostImage: string
 }
 
 export function ListingCard({
-    image,
+    id,
     title,
     price,
     location,
     vouchCount,
     connectionType,
     hostName,
-    hostImage,
+    image,
+    hostImage
 }: ListingCardProps) {
+    const router = useRouter()
+
+    const handleClick = () => {
+        if (id) {
+            router.push(`/listings/${id}`)
+        }
+    }
+
     return (
-        <Card className="overflow-hidden bg-card transition-all hover:shadow-lg">
-            <div className="relative aspect-video w-full overflow-hidden">
+        <Card
+            className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+            onClick={handleClick}
+        >
+            <div className="aspect-video relative overflow-hidden">
                 <img
                     src={image}
                     alt={title}
-                    className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                    className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute right-3 top-3">
-                    <Badge
-                        variant={connectionType === "Direct" ? "default" : "secondary"}
-                        className="backdrop-blur-md"
-                    >
-                        {connectionType}
-                    </Badge>
-                </div>
+                <Badge
+                    variant={connectionType === "Direct" ? "default" : "secondary"}
+                    className="absolute top-2 right-2"
+                >
+                    {connectionType}
+                </Badge>
             </div>
-            <CardHeader className="p-4">
-                <div className="flex items-start justify-between">
-                    <div>
-                        <h3 className="font-semibold">{title}</h3>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                            <MapPin className="mr-1 h-3 w-3" />
-                            {location}
-                        </div>
-                    </div>
-                    <p className="font-bold text-primary">${price}/mo</p>
+            <CardContent className="p-4">
+                <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-semibold text-lg line-clamp-1">{title}</h3>
+                    <span className="font-bold text-primary whitespace-nowrap ml-2">
+                        ${price}/mo
+                    </span>
                 </div>
-            </CardHeader>
-            <CardContent className="p-4 pt-0">
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center text-sm text-muted-foreground mb-3">
+                    <MapPin className="h-4 w-4 mr-1" />
+                    <span className="line-clamp-1">{location}</span>
+                </div>
+                <div className="flex items-center justify-between pt-3 border-t">
                     <div className="flex items-center gap-2">
-                        <Avatar src={hostImage} alt={hostName} className="h-6 w-6" />
-                        <span className="text-muted-foreground">Hosted by {hostName}</span>
+                        <Avatar name={hostName} src={hostImage} size="sm" />
+                        <span className="text-sm font-medium">{hostName}</span>
                     </div>
-                </div>
-                <div className="mt-4 flex items-center gap-2 rounded-md bg-secondary/50 p-2 text-xs">
-                    <Users className="h-3 w-3 text-primary" />
-                    <span className="font-medium text-primary">{vouchCount} mutual friends</span> vouch for this.
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Users className="h-4 w-4" />
+                        <span>{vouchCount} vouches</span>
+                    </div>
                 </div>
             </CardContent>
-            <CardFooter className="p-4 pt-0">
-                <Button className="w-full">Request to View</Button>
-            </CardFooter>
         </Card>
     )
 }

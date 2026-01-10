@@ -1,0 +1,166 @@
+.page {
+    min-height: 100vh;
+    background: linear-gradient(135deg,
+            hsl(40, 20%, 97%) 0%,
+            hsl(35, 30%, 95%) 50%,
+            hsl(40, 20%, 97%) 100%);
+    padding: 3rem 1.5rem;
+}
+
+.container {
+    max-width: 72rem;
+    margin: 0 auto;
+}
+
+.grid {
+    display: grid;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.mainContent {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.imageGallery {
+    margin-bottom: 2rem;
+}
+
+.mainImage {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+}
+
+.thumbnails {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
+}
+
+.thumbnail {
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.thumbnail:hover {
+    opacity: 0.8;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: hsl(25, 45%, 45%);
+    margin-bottom: 1rem;
+}
+
+.location {
+    color: hsl(25, 5%, 45%);
+    margin-bottom: 2rem;
+}
+
+.description {
+    line-height: 1.6;
+    color: hsl(25, 10%, 25%);
+    margin-bottom: 2rem;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.detailItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detailLabel {
+    font-size: 0.875rem;
+    color: hsl(25, 5%, 45%);
+}
+
+.detailValue {
+    font-weight: 600;
+}
+
+.amenities {
+    margin-bottom: 2rem;
+}
+
+.amenitiesList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.amenityTag {
+    padding: 0.5rem 1rem;
+    background: hsl(25, 15%, 95%);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.sidebar {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+}
+
+.hostSection {
+    margin-bottom: 2rem;
+}
+
+.hostHeader {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.hostInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.hostImage {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.hostName {
+    font-weight: 600;
+    font-size: 1.125rem;
+}

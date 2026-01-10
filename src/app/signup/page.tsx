@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { createUserProfile } from '@/lib/firestore';
 import { Button } from '@/components/Button';
+import { ProfileImageUpload } from '@/components/ProfileImageUpload';
 import styles from '../login/page.module.css';
 
 export default function SignupPage() {
@@ -18,6 +19,7 @@ export default function SignupPage() {
     const [monthlyIncome, setMonthlyIncome] = useState('');
     const [occupation, setOccupation] = useState('');
     const [bio, setBio] = useState('');
+    const [photoURL, setPhotoURL] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { signUp } = useAuth();
@@ -66,6 +68,7 @@ export default function SignupPage() {
                         uid: user.uid,
                         email: user.email || '',
                         displayName: displayName,
+                        photoURL: photoURL || undefined,
                         age: parseInt(age),
                         location: location,
                         monthlyIncome: parseInt(monthlyIncome),
@@ -241,6 +244,13 @@ export default function SignupPage() {
                         {/* Step 3: Additional Info */}
                         {step === 3 && (
                             <>
+                                <div className="flex justify-center mb-4">
+                                    <ProfileImageUpload
+                                        value={photoURL}
+                                        onChange={setPhotoURL}
+                                    />
+                                </div>
+
                                 <div className={styles.inputGroup}>
                                     <label htmlFor="occupation" className={styles.label}>Occupation</label>
                                     <input

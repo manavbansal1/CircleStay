@@ -1,83 +1,115 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { ListingCard } from "@/components/ListingCard"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
+import { Button } from "@/components/Button"
+import { Plus } from "lucide-react"
+import Link from "next/link"
 import { motion } from "framer-motion"
+import { getAllListings, getUserProfile } from "@/lib/firestore"
+import type { Listing, UserProfile } from "@/lib/firestore"
 import styles from "./page.module.css"
 
-// Mock Data
-const listings = [
-    {
-        id: 1,
-        title: "Cozy Room in Mission District",
-        price: 850,
-        location: "Mission District, SF",
-        vouchCount: 12,
-        connectionType: "Direct" as const,
-        hostName: "Sarah Chen",
-        image: "https://images.unsplash.com/photo-1596276020587-8044fe049813?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        hostImage: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&auto=format&fit=crop&q=60"
-    },
-    {
-        id: 2,
-        title: "Sunny Studio near Campus",
-        price: 980,
-        location: "Berkeley, CA",
-        vouchCount: 5,
-        connectionType: "2nd Degree" as const,
-        hostName: "David Kim",
-        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        hostImage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=60"
-    },
-    {
-        id: 3,
-        title: "Master Bedroom with Bath",
-        price: 1100,
-        location: "Oakland, CA",
-        vouchCount: 8,
-        connectionType: "Direct" as const,
-        hostName: "Elena Rodriguez",
-        image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        hostImage: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=60"
-    },
-    {
-        id: 4,
-        title: "Shared Loft Space",
-        price: 700,
-        location: "SOMA, SF",
-        vouchCount: 22,
-        connectionType: "3rd Degree" as const,
-        hostName: "Marcus Johnson",
-        image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        hostImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=60"
-    }
-]
+interface ListingWithHost extends Listing {
+    hostName: string;
+    hostImage: string;
+}
 
 export default function MarketplacePage() {
+    const [listings, setListings] = useState<ListingWithHost[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        async function loadListings() {
+            try {
+                const data = await getAllListings()
+
+                // Fetch host profiles for each listing
+                const listingsWithHosts = await Promise.all(
+                    data.map(async (listing) => {
+                        const hostProfile = await getUserProfile(listing.hostId)
+                        return {
+                            ...listing,
+                            hostName: hostProfile?.displayName || 'Unknown Host',
+                            hostImage: hostProfile?.photoURL || ''
+                        }
+                    })
+                )
+
+                setListings(listingsWithHosts)
+            } catch (error) {
+                console.error('Error loading listings:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadListings()
+    }, [])
+
     return (
         <ProtectedRoute>
             <div className={styles.page}>
                 <div className={styles.container}>
-                    <div className={styles.header}>
-                        <h1 className={styles.title}>Vouch Marketplace</h1>
-                        <p className={styles.description}>
-                            Rent from people you trust. Listings vetted by your network.
-                        </p>
+                    <div className="flex justify-between items-start mb-8">
+                        <div className={styles.header}>
+                            <h1 className={styles.title}>Vouch Marketplace</h1>
+                            <p className={styles.description}>
+                                Rent from people you trust. Listings vetted by your network.
+                            </p>
+                        </div>
+                        <Link href="/listings/create">
+                            <Button className="gap-2">
+                                <Plus className="h-4 w-4" />
+                                Create Listing
+                            </Button>
+                        </Link>
                     </div>
 
-                    <div className={styles.grid}>
-                        {listings.map((listing, index) => (
-                            <motion.div
-                                key={listing.id}
-                                className={styles.cardWrapper}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: index * 0.1 }}
-                            >
-                                <ListingCard {...listing} />
-                            </motion.div>
-                        ))}
-                    </div>
+                    {loading ? (
+                        <div className="flex items-center justify-center py-12">
+                            <div className="text-center">
+                                <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+                                <p className="mt-4 text-muted-foreground">Loading listings...</p>
+                            </div>
+                        </div>
+                    ) : listings.length > 0 ? (
+                        <div className={styles.grid}>
+                            {listings.map((listing, index) => (
+                                <motion.div
+                                    key={listing.id}
+                                    className={styles.cardWrapper}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                                >
+                                    <ListingCard
+                                        id={listing.id}
+                                        title={listing.title}
+                                        price={listing.price}
+                                        location={listing.location}
+                                        vouchCount={listing.vouchCount}
+                                        connectionType={listing.connectionType}
+                                        hostName={listing.hostName}
+                                        image={listing.images[0] || "https://images.unsplash.com/photo-1596276020587-8044fe049813?w=800&auto=format&fit=crop&q=60"}
+                                        hostImage={listing.hostImage}
+                                    />
+                                </motion.div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <h3 className="text-xl font-semibold mb-2">No listings yet</h3>
+                            <p className="text-muted-foreground mb-4">Be the first to create a listing!</p>
+                            <Link href="/listings/create">
+                                <Button>
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Create Listing
+                                </Button>
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </ProtectedRoute>

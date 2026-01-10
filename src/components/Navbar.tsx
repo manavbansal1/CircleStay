@@ -6,6 +6,7 @@ import { Menu, X, User, LogOut } from "lucide-react"
 import { useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { useRouter } from "next/navigation"
+import { NotificationCenter } from "@/components/NotificationCenter"
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
@@ -58,10 +59,13 @@ export function Navbar() {
                         <div className="h-9 w-24 bg-secondary animate-pulse rounded-md" />
                     ) : user ? (
                         <>
-                            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50">
-                                <User className="h-4 w-4" />
-                                <span className="text-sm font-medium">{user.displayName || user.email}</span>
-                            </div>
+                            <NotificationCenter />
+                            <Link href="/profile">
+                                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors cursor-pointer">
+                                    <User className="h-4 w-4" />
+                                    <span className="text-sm font-medium">{user.displayName || user.email}</span>
+                                </div>
+                            </Link>
                             <Button variant="ghost" size="sm" onClick={handleSignOut}>
                                 <LogOut className="h-4 w-4 mr-2" />
                                 Sign Out

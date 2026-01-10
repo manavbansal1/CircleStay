@@ -1,0 +1,132 @@
+.page {
+    min-height: 100vh;
+    background: linear-gradient(135deg,
+            hsl(40, 20%, 97%) 0%,
+            hsl(35, 30%, 95%) 50%,
+            hsl(40, 20%, 97%) 100%);
+    padding: 3rem 1.5rem;
+}
+
+.container {
+    max-width: 64rem;
+    margin: 0 auto;
+}
+
+.header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.profileHeader {
+    display: flex;
+    gap: 2rem;
+    align-items: start;
+}
+
+.profileImage {
+    flex-shrink: 0;
+}
+
+.profileInfo {
+    flex: 1;
+}
+
+.name {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.email {
+    color: hsl(25, 5%, 45%);
+    margin-bottom: 1rem;
+}
+
+.stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.statLabel {
+    font-size: 0.875rem;
+    color: hsl(25, 5%, 45%);
+}
+
+.statValue {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: hsl(25, 45%, 45%);
+}
+
+.section {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.infoGrid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .infoGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.infoItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.infoLabel {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: hsl(25, 5%, 45%);
+}
+
+.infoValue {
+    font-size: 1rem;
+    color: hsl(25, 10%, 15%);
+}
+
+.bio {
+    line-height: 1.6;
+    color: hsl(25, 10%, 25%);
+}
+
+.emptyState {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: hsl(25, 5%, 45%);
+}
