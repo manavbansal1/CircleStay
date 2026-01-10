@@ -1,0 +1,141 @@
+.container {
+    padding: 2rem 0;
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: 3rem 0;
+    }
+}
+
+.wrapper {
+    margin: 0 auto;
+    max-width: 80rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .header {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.headerText h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+}
+
+@media (min-width: 768px) {
+    .headerText h1 {
+        font-size: 2.25rem;
+    }
+}
+
+.headerText p {
+    margin-top: 0.5rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.poolCard {
+    display: flex;
+    flex-direction: column;
+}
+
+.poolHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+}
+
+.poolTitle {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.poolIcon {
+    height: 1rem;
+    width: 1rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.poolContent {
+    margin-top: 1rem;
+    flex: 1;
+}
+
+.poolPrice {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.poolPriceUnit {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: hsl(var(--muted-foreground));
+}
+
+.poolDetails {
+    font-size: 0.75rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.membersSection {
+    margin-top: 1.5rem;
+}
+
+.membersLabel {
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+}
+
+.membersGrid {
+    display: flex;
+    margin-left: -0.5rem;
+}
+
+.emptySlot {
+    display: flex;
+    height: 2.5rem;
+    width: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 2px dashed hsl(var(--muted));
+    background-color: transparent;
+    color: hsl(var(--muted-foreground));
+}
+
+.poolActions {
+    margin-top: 1.5rem;
+}

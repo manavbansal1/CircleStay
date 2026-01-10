@@ -2,8 +2,9 @@
 
 import { ListingCard } from "@/components/ListingCard"
 import { motion } from "framer-motion"
+import styles from "./page.module.css"
 
-// Mock Data (moved from data.ts idea for speed, or I can create data.ts later)
+// Mock Data
 const listings = [
     {
         id: 1,
@@ -53,15 +54,15 @@ const listings = [
 
 export default function MarketplacePage() {
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight">Vouch Marketplace</h1>
-                <p className="text-muted-foreground">
+        <div className={styles.container}>
+            <div className={styles.header}>
+                <h1 className={styles.title}>Vouch Marketplace</h1>
+                <p className={styles.description}>
                     Rent from people you trust. Listings vetted by your network.
                 </p>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={styles.grid}>
                 {listings.map((listing, index) => (
                     <motion.div
                         key={listing.id}

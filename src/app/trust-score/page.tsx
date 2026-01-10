@@ -4,27 +4,28 @@ import { TrustScoreIndicator } from "@/components/TrustScoreIndicator"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/Card"
 import { Badge } from "@/components/Badge"
 import { Activity, CheckCircle, Clock } from "lucide-react"
+import styles from "./page.module.css"
 
 export default function TrustScorePage() {
     return (
-        <div className="container py-8 md:py-12">
-            <div className="mx-auto max-w-4xl space-y-8">
+        <div className={styles.container}>
+            <div className={styles.wrapper}>
 
-                <div className="text-center">
-                    <h1 className="text-3xl font-bold md:text-4xl">Your Reputation</h1>
-                    <p className="mt-2 text-muted-foreground">Portable trust built on real actions.</p>
+                <div className={styles.header}>
+                    <h1>Your Reputation</h1>
+                    <p className={styles.subtitle}>Portable trust built on real actions.</p>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2">
-                    <Card className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-background to-secondary/20 border-primary/20">
+                <div className={styles.grid}>
+                    <Card className={styles.scoreCard}>
                         <TrustScoreIndicator score={85} />
-                        <div className="mt-4 flex gap-2">
+                        <div className={styles.badges}>
                             <Badge variant="default" className="bg-green-500 hover:bg-green-600">High Reliability</Badge>
                             <Badge variant="outline">Top 10%</Badge>
                         </div>
                     </Card>
 
-                    <div className="space-y-4">
+                    <div className={styles.sidebar}>
                         <Card>
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-lg flex items-center gap-2">
@@ -32,24 +33,24 @@ export default function TrustScorePage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <ul className="space-y-4">
-                                    <li className="flex justify-between items-center text-sm">
-                                        <span className="flex items-center gap-2">
+                                <ul className={styles.activityList}>
+                                    <li className={styles.activityItem}>
+                                        <span className={styles.activityLabel}>
                                             <CheckCircle className="h-4 w-4 text-green-500" /> Rent Paid on Time
                                         </span>
-                                        <span className="text-muted-foreground">+5 pts</span>
+                                        <span className={styles.activityPoints}>+5 pts</span>
                                     </li>
-                                    <li className="flex justify-between items-center text-sm">
-                                        <span className="flex items-center gap-2">
+                                    <li className={styles.activityItem}>
+                                        <span className={styles.activityLabel}>
                                             <CheckCircle className="h-4 w-4 text-green-500" /> Commons Contribution
                                         </span>
-                                        <span className="text-muted-foreground">+2 pts</span>
+                                        <span className={styles.activityPoints}>+2 pts</span>
                                     </li>
-                                    <li className="flex justify-between items-center text-sm">
-                                        <span className="flex items-center gap-2">
+                                    <li className={styles.activityItem}>
+                                        <span className={styles.activityLabel}>
                                             <Clock className="h-4 w-4 text-orange-500" /> Profile Verification
                                         </span>
-                                        <span className="text-muted-foreground">Pending</span>
+                                        <span className={styles.activityPoints}>Pending</span>
                                     </li>
                                 </ul>
                             </CardContent>
@@ -62,11 +63,11 @@ export default function TrustScorePage() {
                                 </CardTitle>
                                 <CardDescription>People who vouched for you</CardDescription>
                             </CardHeader>
-                            <CardContent className="flex -space-x-2 overflow-hidden">
+                            <CardContent className={styles.avatarGroup}>
                                 {[1, 2, 3, 4].map((i) => (
                                     <div key={i} className="inline-block h-8 w-8 rounded-full ring-2 ring-background bg-slate-400" />
                                 ))}
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted ring-2 ring-background text-xs font-medium">
+                                <div className={styles.avatarMore}>
                                     +12
                                 </div>
                             </CardContent>
