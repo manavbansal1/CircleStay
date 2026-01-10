@@ -69,8 +69,10 @@ export interface Notification {
     id: string;
     recipientId: string;
     senderId: string;
-    type: 'viewing_request' | 'review' | 'message';
+    type: 'viewing_request' | 'review' | 'message' | 'pool_invite' | 'bill_added' | 'payment_received';
     listingId?: string;
+    poolId?: string;
+    billId?: string;
     message: string;
     read: boolean;
     createdAt: Date;

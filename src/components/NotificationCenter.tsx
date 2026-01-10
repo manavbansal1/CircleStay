@@ -116,6 +116,7 @@ export function NotificationCenter() {
                                     key={notification.id}
                                     notification={notification}
                                     onMarkAsRead={handleMarkAsRead}
+                                    onActionComplete={loadNotifications}
                                 />
                             ))
                         ) : (

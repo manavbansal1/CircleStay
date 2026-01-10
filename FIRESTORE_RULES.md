@@ -35,6 +35,48 @@ service cloud.firestore {
                        request.auth.uid == request.resource.data.reviewerId;
       allow update, delete: if false; // Reviews cannot be edited or deleted
     }
+    
+    // Notifications collection
+    match /notifications/{notificationId} {
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.recipientId;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+                       request.auth.uid == resource.data.recipientId;
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.recipientId;
+    }
+    
+    // Viewing Requests collection
+    match /viewingRequests/{requestId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+                       (request.auth.uid == resource.data.requesterId || 
+                        request.auth.uid == resource.data.hostId);
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.requesterId;
+    }
+    
+    // Pools collection - for Commons/bill splitting
+    match /pools/{poolId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+                       (request.auth.uid in resource.data.memberIds || 
+                        request.auth.uid == resource.data.creatorId);
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.creatorId;
+    }
+    
+    // Bills collection - for pool expenses
+    match /bills/{billId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.paidById;
+    }
   }
 }
 ```
@@ -61,8 +103,13 @@ service cloud.firestore {
 
 ## Production Rules (Recommended)
 
-For production, use the first set of rules which:
+The first set of rules is recommended for production. It ensures:
 - Requires authentication for all operations
 - Users can only edit their own profiles
 - Users can only edit/delete their own listings
 - Reviews are immutable once created
+- Pool members can read and update their pools
+- Only pool creators can delete pools
+- Bill creators can delete bills they added
+- Notifications are only readable by recipients
+
