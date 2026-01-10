@@ -61,6 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             const idToken = await userCredential.user.getIdToken();
             await api.login(idToken);
+
+            // Note: User will be redirected to onboarding from signup page
         } catch (error: any) {
             console.error('Signup error:', error);
             throw new Error(error.message || 'Failed to sign up');

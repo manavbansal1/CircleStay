@@ -1,6 +1,7 @@
 "use client"
 
 import { ListingCard } from "@/components/ListingCard"
+import { ProtectedRoute } from "@/components/ProtectedRoute"
 import { motion } from "framer-motion"
 import styles from "./page.module.css"
 
@@ -54,29 +55,31 @@ const listings = [
 
 export default function MarketplacePage() {
     return (
-        <div className={styles.page}>
-            <div className={styles.container}>
-                <div className={styles.header}>
-                    <h1 className={styles.title}>Vouch Marketplace</h1>
-                    <p className={styles.description}>
-                        Rent from people you trust. Listings vetted by your network.
-                    </p>
-                </div>
+        <ProtectedRoute>
+            <div className={styles.page}>
+                <div className={styles.container}>
+                    <div className={styles.header}>
+                        <h1 className={styles.title}>Vouch Marketplace</h1>
+                        <p className={styles.description}>
+                            Rent from people you trust. Listings vetted by your network.
+                        </p>
+                    </div>
 
-                <div className={styles.grid}>
-                    {listings.map((listing, index) => (
-                        <motion.div
-                            key={listing.id}
-                            className={styles.cardWrapper}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: index * 0.1 }}
-                        >
-                            <ListingCard {...listing} />
-                        </motion.div>
-                    ))}
+                    <div className={styles.grid}>
+                        {listings.map((listing, index) => (
+                            <motion.div
+                                key={listing.id}
+                                className={styles.cardWrapper}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, delay: index * 0.1 }}
+                            >
+                                <ListingCard {...listing} />
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
+        </ProtectedRoute>
     )
 }
