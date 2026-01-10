@@ -77,6 +77,14 @@ service cloud.firestore {
       allow delete: if request.auth != null && 
                        request.auth.uid == resource.data.paidById;
     }
+    
+    // User Ratings collection - for trust score system
+    match /userRatings/{ratingId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.raterId;
+      allow update, delete: if false; // Ratings cannot be edited or deleted
+    }
   }
 }
 ```

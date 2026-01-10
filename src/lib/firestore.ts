@@ -305,9 +305,12 @@ export async function markNotificationAsRead(notificationId: string) {
 
 export async function getUnreadNotificationCount(userId: string): Promise<number> {
     const notificationsRef = collection(db, 'notifications');
-    const q = query(notificationsRef, where('recipientId', '==', userId), where('read', '==', false));
+    const q = query(notificationsRef, where('recipientId', '==', userId));
     const querySnapshot = await getDocs(q);
-    return querySnapshot.size;
+    
+    // Filter unread notifications in JavaScript to avoid composite index
+    const unreadCount = querySnapshot.docs.filter(doc => doc.data().read === false).length;
+    return unreadCount;
 }
 
 // Viewing Request Functions
