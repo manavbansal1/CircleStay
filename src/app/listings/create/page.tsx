@@ -136,16 +136,19 @@ export default function CreateListingPage() {
                             </div>
 
                             {/* Map Preview */}
-                            {location && (
+                            {(locationLat && locationLng) && (
                                 <div className={styles.inputGroup}>
                                     <label className={styles.label}>Location Preview</label>
                                     <MapView
                                         address={location}
                                         lat={locationLat}
                                         lng={locationLng}
-                                        height="300px"
-                                        zoom={14}
+                                        height="350px"
+                                        zoom={16}
                                     />
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        📍 Red marker shows the exact location of your property
+                                    </p>
                                 </div>
                             )}
 

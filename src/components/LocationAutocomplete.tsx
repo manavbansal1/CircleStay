@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Loader } from 'lucide-react';
 
 interface LocationAutocompleteProps {
@@ -67,26 +67,28 @@ export function LocationAutocomplete({
             });
 
             // Listen for place selection
-            autocompleteRef.current.addListener('place_changed', () => {
+            const listener = autocompleteRef.current.addListener('place_changed', () => {
                 const place = autocompleteRef.current?.getPlace();
                 
-                if (place?.formatted_address) {
-                    const lat = place.geometry?.location?.lat();
-                    const lng = place.geometry?.location?.lng();
+                if (place?.formatted_address && place?.geometry?.location) {
+                    const lat = place.geometry.location.lat();
+                    const lng = place.geometry.location.lng();
+                    
+                    // Call onChange with all three parameters
                     onChange(place.formatted_address, lat, lng);
                 }
             });
+
+            return () => {
+                // Cleanup listener
+                if (listener) {
+                    google.maps.event.removeListener(listener);
+                }
+            };
         } catch (err) {
             console.error('Error initializing autocomplete:', err);
             setError("Error initializing location search");
         }
-
-        return () => {
-            // Cleanup listeners
-            if (autocompleteRef.current) {
-                google.maps.event.clearInstanceListeners(autocompleteRef.current);
-            }
-        };
     }, [isLoaded, onChange]);
 
     if (error) {

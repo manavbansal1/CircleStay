@@ -64,9 +64,13 @@ export function MapView({
 
         // Initialize map if not already done
         if (!mapInstanceRef.current) {
+            const initialCenter = (lat && lng) 
+                ? { lat, lng } 
+                : { lat: 37.7749, lng: -122.4194 }; // Default to SF only if no coords
+            
             mapInstanceRef.current = new google.maps.Map(mapRef.current, {
-                zoom,
-                center: { lat: lat || 37.7749, lng: lng || -122.4194 }, // Default to SF
+                zoom: (lat && lng) ? zoom : 10,
+                center: initialCenter,
                 mapTypeControl: false,
                 streetViewControl: true,
                 fullscreenControl: true,
@@ -74,7 +78,7 @@ export function MapView({
                     {
                         featureType: "poi",
                         elementType: "labels",
-                        stylers: [{ visibility: "off" }]
+                        stylers: [{ visibility: "on" }]
                     }
                 ]
             });
@@ -83,6 +87,8 @@ export function MapView({
         // If we have coordinates, update map
         if (lat && lng) {
             const position = { lat, lng };
+            
+            // Always update center and zoom when coordinates change
             mapInstanceRef.current?.setCenter(position);
             mapInstanceRef.current?.setZoom(zoom);
 
@@ -90,14 +96,39 @@ export function MapView({
                 // Remove old marker
                 if (markerRef.current) {
                     markerRef.current.setMap(null);
+                    markerRef.current = null;
                 }
 
-                // Add new marker
+                // Add new marker with custom icon
                 markerRef.current = new google.maps.Marker({
                     position,
                     map: mapInstanceRef.current,
-                    title: address || "Location",
-                    animation: google.maps.Animation.DROP
+                    title: address || "Property Location",
+                    animation: google.maps.Animation.DROP,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#DC2626',
+                        fillOpacity: 1,
+                        strokeColor: '#FFFFFF',
+                        strokeWeight: 3,
+                        scale: 12
+                    },
+                    label: {
+                        text: '🏠',
+                        fontSize: '18px'
+                    }
+                });
+
+                // Add info window
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<div style="padding: 8px; font-family: sans-serif;">
+                        <strong style="color: #8B563C;">${address || 'Property Location'}</strong>
+                        <br><small style="color: #666;">📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}</small>
+                    </div>`
+                });
+
+                markerRef.current.addListener('click', () => {
+                    infoWindow.open(mapInstanceRef.current, markerRef.current);
                 });
             }
         } else if (address && !lat && !lng) {
@@ -120,8 +151,32 @@ export function MapView({
                         markerRef.current = new google.maps.Marker({
                             position,
                             map: mapInstanceRef.current,
-                            title: address,
-                            animation: google.maps.Animation.DROP
+                            title: address || "Property Location",
+                            animation: google.maps.Animation.DROP,
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                fillColor: '#DC2626',
+                                fillOpacity: 1,
+                                strokeColor: '#FFFFFF',
+                                strokeWeight: 3,
+                                scale: 12
+                            },
+                            label: {
+                                text: '🏠',
+                                fontSize: '18px'
+                            }
+                        });
+
+                        // Add info window
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: `<div style="padding: 8px; font-family: sans-serif;">
+                                <strong style="color: #8B563C;">${address || 'Property Location'}</strong>
+                                <br><small style="color: #666;">📍 ${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}</small>
+                            </div>`
+                        });
+
+                        markerRef.current.addListener('click', () => {
+                            infoWindow.open(mapInstanceRef.current, markerRef.current);
                         });
                     }
                 } else {
