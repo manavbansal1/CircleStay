@@ -1,0 +1,88 @@
+.card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 46, 0.1);
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.scoreDisplay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(139, 92, 46, 0.05), rgba(139, 92, 46, 0.1));
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.scoreLabel {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(25, 5%, 45%);
+}
+
+.scoreValue {
+    font-size: 2rem;
+    font-weight: 700;
+    color: hsl(25, 45%, 35%);
+}
+
+.breakdown {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.breakdownItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(139, 92, 46, 0.1);
+}
+
+.itemLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: hsl(25, 10%, 30%);
+}
+
+.itemPoints {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: hsl(25, 45%, 35%);
+}
+
+.formula {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(139, 92, 46, 0.1);
+}
+
+.formulaTitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: hsl(25, 10%, 35%);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.formulaText {
+    font-size: 0.875rem;
+    color: hsl(25, 5%, 45%);
+    margin-bottom: 0.25rem;
+}
+
+.maxScore {
+    font-size: 0.75rem;
+    color: hsl(25, 5%, 55%);
+    font-style: italic;
+}

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { getUserProfile, getUserListings } from '@/lib/firestore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Button } from '@/components/Button';
+import { TrustScoreBreakdown } from '@/components/TrustScoreBreakdown';
 import { MapPin, Briefcase, DollarSign, User } from 'lucide-react';
 import type { UserProfile, Listing } from '@/lib/firestore';
 import styles from './page.module.css';
@@ -156,6 +157,17 @@ export default function PublicProfilePage() {
                                 </div>
                             )}
                         </div>
+                    </div>
+
+                    {/* Trust Score Breakdown */}
+                    <div className={styles.section}>
+                        <TrustScoreBreakdown
+                            trustScore={profile.trustScore}
+                            idVerified={profile.idVerified}
+                            averageRating={profile.averageRating || 0}
+                            ratingsCount={profile.ratingsCount || 0}
+                            idVerificationDate={profile.idVerificationDate}
+                        />
                     </div>
 
                     {/* Listings */}
