@@ -64,7 +64,11 @@ service cloud.firestore {
       allow create: if request.auth != null;
       allow update: if request.auth != null && 
                        (request.auth.uid in resource.data.memberIds || 
-                        request.auth.uid == resource.data.creatorId);
+                        request.auth.uid == resource.data.creatorId ||
+                        // Allow joining public pools
+                        (resource.data.visibility == 'public' && 
+                         request.auth.uid in request.resource.data.memberIds &&
+                         !(request.auth.uid in resource.data.memberIds)));
       allow delete: if request.auth != null && 
                        request.auth.uid == resource.data.creatorId;
     }
