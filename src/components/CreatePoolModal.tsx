@@ -41,6 +41,9 @@ export function CreatePoolModal({ isOpen, onClose, onPoolCreated }: CreatePoolMo
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState(categories[0]);
     const [selectedIcon, setSelectedIcon] = useState(poolIcons[0].value);
+    const [visibility, setVisibility] = useState<'private' | 'public'>('private');
+    const [maxMembers, setMaxMembers] = useState("10");
+    const [monthlyFee, setMonthlyFee] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -61,13 +64,21 @@ export function CreatePoolModal({ isOpen, onClose, onPoolCreated }: CreatePoolMo
         setError("");
 
         try {
-            const poolId = await createPool({
+            const poolData: any = {
                 name: name.trim(),
                 description: description.trim() || undefined,
                 creatorId: user.uid,
                 category,
-                icon: selectedIcon
-            });
+                icon: selectedIcon,
+                visibility,
+                maxMembers: parseInt(maxMembers) || 10
+            };
+
+            if (visibility === 'public' && monthlyFee) {
+                poolData.monthlyFee = parseFloat(monthlyFee);
+            }
+
+            const poolId = await createPool(poolData);
 
             onPoolCreated?.(poolId);
             handleClose();
@@ -83,6 +94,9 @@ export function CreatePoolModal({ isOpen, onClose, onPoolCreated }: CreatePoolMo
         setDescription("");
         setCategory(categories[0]);
         setSelectedIcon(poolIcons[0].value);
+        setVisibility('private');
+        setMaxMembers("10");
+        setMonthlyFee("");
         setError("");
         onClose();
     };
@@ -135,6 +149,70 @@ export function CreatePoolModal({ isOpen, onClose, onPoolCreated }: CreatePoolMo
                             className="w-full px-4 py-3 rounded-xl border-2 border-border/50 bg-background/70 backdrop-blur-sm text-base placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all duration-200 hover:border-primary/30 resize-none"
                         />
                     </div>
+
+                    {/* Visibility */}
+                    <div>
+                        <label className="block text-sm font-semibold mb-2">Pool Type</label>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setVisibility('private')}
+                                disabled={loading}
+                                className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+                                    visibility === 'private'
+                                        ? "border-primary bg-gradient-to-r from-primary/10 to-accent/10"
+                                        : "border-border/30 bg-secondary/30 hover:border-primary/50"
+                                }`}
+                            >
+                                <div className="font-semibold mb-1">Private</div>
+                                <div className="text-xs text-muted-foreground">Splitwise-style expense sharing</div>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setVisibility('public')}
+                                disabled={loading}
+                                className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+                                    visibility === 'public'
+                                        ? "border-primary bg-gradient-to-r from-primary/10 to-accent/10"
+                                        : "border-border/30 bg-secondary/30 hover:border-primary/50"
+                                }`}
+                            >
+                                <div className="font-semibold mb-1">Public</div>
+                                <div className="text-xs text-muted-foreground">Share subscriptions like Netflix</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Public Pool Specific Fields */}
+                    {visibility === 'public' && (
+                        <>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-sm font-semibold mb-2">Max Members</label>
+                                    <Input
+                                        type="number"
+                                        min="2"
+                                        max="50"
+                                        value={maxMembers}
+                                        onChange={(e) => setMaxMembers(e.target.value)}
+                                        disabled={loading}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold mb-2">Monthly Fee ($)</label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        placeholder="Optional"
+                                        value={monthlyFee}
+                                        onChange={(e) => setMonthlyFee(e.target.value)}
+                                        disabled={loading}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
 
                     {/* Category */}
                     <div>

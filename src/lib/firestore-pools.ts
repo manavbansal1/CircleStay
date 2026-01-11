@@ -30,6 +30,9 @@ export interface Pool {
     pendingInvites: string[];
     category?: string;
     icon?: string;
+    visibility: 'private' | 'public';
+    maxMembers?: number;
+    monthlyFee?: number;
     status: 'active' | 'archived';
     createdAt: Date;
     updatedAt: Date;
@@ -72,6 +75,9 @@ export async function createPool(data: {
     creatorId: string;
     category?: string;
     icon?: string;
+    visibility?: 'private' | 'public';
+    maxMembers?: number;
+    monthlyFee?: number;
 }): Promise<string> {
     const poolsRef = collection(db, 'pools');
     const newPoolRef = doc(poolsRef);
@@ -83,6 +89,9 @@ export async function createPool(data: {
         creatorId: data.creatorId,
         ...(data.category && { category: data.category }),
         ...(data.icon && { icon: data.icon }),
+        visibility: data.visibility || 'private',
+        maxMembers: data.maxMembers || 10,
+        ...(data.monthlyFee && { monthlyFee: data.monthlyFee }),
         id: newPoolRef.id,
         memberIds: [data.creatorId],
         pendingInvites: [],
@@ -128,6 +137,66 @@ export async function getUserPools(userId: string): Promise<Pool[]> {
             createdAt: data.createdAt?.toDate(),
             updatedAt: data.updatedAt?.toDate()
         } as Pool;
+    });
+}
+
+export async function getPublicPools(): Promise<Pool[]> {
+    const poolsRef = collection(db, 'pools');
+    const q = query(
+        poolsRef,
+        where('visibility', '==', 'public'),
+        where('status', '==', 'active'),
+        orderBy('createdAt', 'desc')
+    );
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+            ...data,
+            id: doc.id,
+            createdAt: data.createdAt?.toDate(),
+            updatedAt: data.updatedAt?.toDate()
+        } as Pool;
+    });
+}
+
+export async function joinPublicPool(poolId: string, userId: string): Promise<void> {
+    const pool = await getPool(poolId);
+
+    if (!pool) {
+        throw new Error('Pool not found');
+    }
+
+    if (pool.visibility !== 'public') {
+        throw new Error('This pool is not public');
+    }
+
+    if (pool.memberIds.includes(userId)) {
+        throw new Error('You are already a member of this pool');
+    }
+
+    // Check max members
+    const maxMembers = pool.maxMembers || 10;
+    if (pool.memberIds.length >= maxMembers) {
+        throw new Error('This pool is full');
+    }
+
+    const poolRef = doc(db, 'pools', poolId);
+
+    await updateDoc(poolRef, {
+        memberIds: arrayUnion(userId),
+        updatedAt: new Date()
+    });
+
+    // Notify pool creator
+    await createNotification({
+        recipientId: pool.creatorId,
+        senderId: userId,
+        type: 'pool_joined',
+        poolId: poolId,
+        message: `joined your public pool "${pool.name}"`,
+        read: false
     });
 }
 
@@ -200,6 +269,11 @@ export async function archivePool(poolId: string): Promise<void> {
         status: 'archived',
         updatedAt: new Date()
     });
+}
+
+export async function deletePool(poolId: string): Promise<void> {
+    const poolRef = doc(db, 'pools', poolId);
+    await deleteDoc(poolRef);
 }
 
 // Bill Functions

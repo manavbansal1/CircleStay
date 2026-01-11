@@ -81,6 +81,25 @@ export function AreaInsightsCard({ address, lat, lng }: AreaInsightsCardProps) {
                 <ScoreCircle score={insights.amenitiesScore} label="Amenities" icon={MapPin} />
             </div>
 
+            {/* Score Calculation Info */}
+            <div className={styles.calculationInfo}>
+                <h4 className={styles.calculationTitle}>How Scores are Calculated</h4>
+                <div className={styles.calculationGrid}>
+                    <div className={styles.calculationItem}>
+                        <strong>Livability:</strong> Based on restaurants (×2), stores (×3), parks (×4), schools (×3), and hospitals (×2) within 1.5km
+                    </div>
+                    <div className={styles.calculationItem}>
+                        <strong>Transit:</strong> Number of transit stations (×15) within 1.5km radius
+                    </div>
+                    <div className={styles.calculationItem}>
+                        <strong>Safety:</strong> AI-estimated based on area amenities and characteristics
+                    </div>
+                    <div className={styles.calculationItem}>
+                        <strong>Amenities:</strong> Average of restaurants, stores, and parks (×10) within 1.5km
+                    </div>
+                </div>
+            </div>
+
             {/* Attractions */}
             {insights.attractions.length > 0 && (
                 <div className={styles.section}>

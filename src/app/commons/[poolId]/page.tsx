@@ -23,13 +23,15 @@ import {
     Loader2,
     TrendingUp,
     TrendingDown,
-    Star
+    Star,
+    Trash2
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
     getPool,
     getPoolBills,
     calculateBalances,
+    deletePool,
     type Pool,
     type Bill,
     type Balance
@@ -52,6 +54,8 @@ export default function PoolDetailPage() {
     const [showInviteModal, setShowInviteModal] = useState(false);
     const [showRateModal, setShowRateModal] = useState(false);
     const [ratingTarget, setRatingTarget] = useState<{ userId: string; billId?: string } | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     const loadPoolData = async () => {
         if (!poolId) return;
@@ -114,6 +118,26 @@ export default function PoolDetailPage() {
     const handleBillAdded = () => {
         loadPoolData();
         setShowAddBillModal(false);
+    };
+
+    const handleDeletePool = async () => {
+        if (!pool || !user) return;
+
+        // Only creator can delete
+        if (pool.creatorId !== user.uid) {
+            alert('Only the pool creator can delete this pool.');
+            return;
+        }
+
+        setDeleting(true);
+        try {
+            await deletePool(poolId);
+            router.push('/commons');
+        } catch (error) {
+            console.error('Error deleting pool:', error);
+            alert('Failed to delete pool. Please try again.');
+            setDeleting(false);
+        }
     };
 
     const userBalance = user ? balances.get(user.uid) : null;
@@ -187,6 +211,15 @@ export default function PoolDetailPage() {
                                 <Plus className="h-4 w-4 mr-2" />
                                 Add Bill
                             </Button>
+                            {pool.creatorId === user?.uid && (
+                                <Button 
+                                    variant="outline" 
+                                    onClick={() => setShowDeleteModal(true)}
+                                    className="text-red-600 border-red-200 hover:bg-red-50"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            )}
                             <Button variant="outline">
                                 <Settings2 className="h-4 w-4" />
                             </Button>
@@ -467,6 +500,35 @@ export default function PoolDetailPage() {
                         />
                     )}
                 </>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl border border-gray-200">
+                        <h3 className="text-xl font-bold mb-4 text-gray-900">Delete Pool</h3>
+                        <p className="text-sm text-gray-600 mb-6">
+                            Are you sure you want to delete "{pool.name}"? This will permanently delete all bills and balances. This action cannot be undone.
+                        </p>
+                        <div className="flex gap-3">
+                            <Button
+                                variant="outline"
+                                onClick={() => setShowDeleteModal(false)}
+                                className="flex-1"
+                                disabled={deleting}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleDeletePool}
+                                disabled={deleting}
+                                className="flex-1 bg-red-600 hover:bg-red-700"
+                            >
+                                {deleting ? 'Deleting...' : 'Delete Pool'}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
             )}
         </ProtectedRoute>
     );

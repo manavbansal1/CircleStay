@@ -3,7 +3,8 @@
 import { Card, CardContent } from "./Card";
 import { Avatar } from "./Avatar";
 import { Button } from "./Button";
-import { Users, Plus, DollarSign } from "lucide-react";
+import { Badge } from "./Badge";
+import { Users, Plus, DollarSign, Globe, Lock, TrendingUp, TrendingDown, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import type { Pool } from "@/lib/firestore-pools";
 import { getUserProfile } from "@/lib/firestore";
@@ -45,99 +46,143 @@ export function PoolCard({ pool, userBalance = 0, onAddBill }: PoolCardProps) {
     }, [pool.memberIds]);
 
     const IconComponent = pool.icon ? iconMap[pool.icon] || Users : Users;
-    const hasOpenSpots = pool.memberIds.length < 10;
+    const maxMembers = pool.maxMembers || 10;
+    const hasOpenSpots = pool.memberIds.length < maxMembers;
+    const isPublic = pool.visibility === 'public';
 
     return (
-        <Card className="group overflow-hidden">
-            <CardContent className="p-6">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start gap-3 flex-1">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
-                            <IconComponent className="h-6 w-6 text-primary" />
+        <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/30">
+            <CardContent className="p-0">
+                {/* Header with gradient background */}
+                <div className={`p-6 pb-4 bg-gradient-to-br ${isPublic ? 'from-blue-50 to-indigo-50' : 'from-amber-50 to-orange-50'}`}>
+                    <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start gap-3 flex-1">
+                            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${isPublic ? 'from-blue-400 to-indigo-500' : 'from-primary to-accent'} flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                                <IconComponent className="h-7 w-7 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <h3 className="font-bold text-xl line-clamp-1 group-hover:text-primary transition-colors">
+                                        {pool.name}
+                                    </h3>
+                                    {isPublic ? (
+                                        <Badge className="bg-blue-500 text-white border-0">
+                                            <Globe className="h-3 w-3 mr-1" />
+                                            Public
+                                        </Badge>
+                                    ) : (
+                                        <Badge variant="secondary" className="border-0">
+                                            <Lock className="h-3 w-3 mr-1" />
+                                            Private
+                                        </Badge>
+                                    )}
+                                </div>
+                                {pool.description && (
+                                    <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                                        {pool.description}
+                                    </p>
+                                )}
+                            </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
-                                {pool.name}
-                            </h3>
-                            {pool.description && (
-                                <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
-                                    {pool.description}
+                    </div>
+                    
+                    <div className="flex gap-2 mt-3">
+                        {pool.category && (
+                            <Badge variant="outline" className="text-xs bg-white/70">
+                                {pool.category}
+                            </Badge>
+                        )}
+                        {pool.monthlyFee && (
+                            <Badge variant="outline" className="text-xs bg-white/70">
+                                <DollarSign className="h-3 w-3 mr-1" />
+                                {pool.monthlyFee}/mo
+                            </Badge>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-6 pt-4">
+                    {/* Balance - only show for private pools or if user has balance */}
+                    {(!isPublic || userBalance !== 0) && (
+                        <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-secondary/30 to-secondary/10 border border-border/50">
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-muted-foreground">Your Balance</span>
+                                <div className="flex items-center gap-2">
+                                    {userBalance > 0 ? (
+                                        <TrendingUp className="h-5 w-5 text-green-500" />
+                                    ) : userBalance < 0 ? (
+                                        <TrendingDown className="h-5 w-5 text-red-500" />
+                                    ) : (
+                                        <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
+                                    )}
+                                    <span className={`font-bold text-2xl ${
+                                        userBalance > 0 
+                                            ? 'text-green-600' 
+                                            : userBalance < 0 
+                                                ? 'text-red-600' 
+                                                : 'text-foreground'
+                                    }`}>
+                                        ${Math.abs(userBalance).toFixed(2)}
+                                    </span>
+                                </div>
+                            </div>
+                            {userBalance !== 0 && (
+                                <p className="text-xs text-muted-foreground mt-2 font-medium">
+                                    {userBalance > 0 ? "✓ You are owed" : "⚠ You owe"}
                                 </p>
                             )}
-                            {pool.category && (
-                                <span className="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-secondary/50 text-muted-foreground">
-                                    {pool.category}
-                                </span>
+                        </div>
+                    )}
+
+                    {/* Members */}
+                    <div className="mb-4">
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="text-sm font-semibold text-foreground flex items-center gap-2">
+                                <Users className="h-4 w-4" />
+                                {pool.memberIds.length}/{maxMembers} Members
+                            </span>
+                            {hasOpenSpots && (
+                                <Badge className="text-xs bg-green-100 text-green-700 border-green-200">
+                                    {maxMembers - pool.memberIds.length} spots open
+                                </Badge>
+                            )}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            {pool.memberIds.slice(0, 5).map((memberId, index) => (
+                                <Avatar
+                                    key={memberId}
+                                    src={undefined}
+                                    alt={memberNames[memberId] || "Member"}
+                                    className="h-9 w-9 border-3 border-white shadow-md"
+                                />
+                            ))}
+                            {pool.memberIds.length > 5 && (
+                                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border-3 border-white shadow-md flex items-center justify-center">
+                                    <span className="text-xs font-bold text-primary">+{pool.memberIds.length - 5}</span>
+                                </div>
+                            )}
+                            {hasOpenSpots && (
+                                <div className="h-9 w-9 rounded-full bg-secondary/50 border-2 border-dashed border-border flex items-center justify-center">
+                                    <Plus className="h-4 w-4 text-muted-foreground" />
+                                </div>
                             )}
                         </div>
                     </div>
-                </div>
 
-                {/* Balance */}
-                <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-secondary/30 to-secondary/10">
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Your Balance</span>
-                        <div className="flex items-center gap-1">
-                            <DollarSign className={`h-4 w-4 ${userBalance > 0 ? 'text-green-500' : userBalance < 0 ? 'text-destructive' : 'text-muted-foreground'}`} />
-                            <span className={`font-bold text-lg ${userBalance > 0 ? 'text-green-500' : userBalance < 0 ? 'text-destructive' : 'text-foreground'}`}>
-                                {Math.abs(userBalance).toFixed(2)}
-                            </span>
-                        </div>
-                    </div>
-                    {userBalance !== 0 && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                            {userBalance > 0 ? "You are owed" : "You owe"}
-                        </p>
-                    )}
-                </div>
-
-                {/* Members */}
-                <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-muted-foreground">
-                            Members ({pool.memberIds.length}/10)
-                        </span>
-                        {hasOpenSpots && (
-                            <span className="text-xs px-2 py-1 rounded-full bg-accent/10 text-accent">
-                                {10 - pool.memberIds.length} spots open
-                            </span>
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2">
+                        <Link href={`/commons/${pool.id}`} className="flex-1">
+                            <Button variant="outline" className="w-full font-semibold hover:bg-primary hover:text-white transition-all">
+                                View Pool
+                            </Button>
+                        </Link>
+                        {onAddBill && !isPublic && (
+                            <Button onClick={onAddBill} className="flex-1 font-semibold shadow-md">
+                                <Plus className="h-4 w-4 mr-1" />
+                                Add Bill
+                            </Button>
                         )}
                     </div>
-                    <div className="flex items-center gap-1">
-                        {pool.memberIds.slice(0, 4).map((memberId, index) => (
-                            <Avatar
-                                key={memberId}
-                                src={undefined}
-                                alt={memberNames[memberId] || "Member"}
-                                className="h-8 w-8 border-2 border-background"
-                            />
-                        ))}
-                        {pool.memberIds.length > 4 && (
-                            <div className="h-8 w-8 rounded-full bg-secondary/50 border-2 border-background flex items-center justify-center">
-                                <span className="text-xs font-medium">+{pool.memberIds.length - 4}</span>
-                            </div>
-                        )}
-                        {hasOpenSpots && (
-                            <div className="h-8 w-8 rounded-full bg-secondary/30 border-2 border-dashed border-border flex items-center justify-center">
-                                <Plus className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-2">
-                    <Link href={`/commons/${pool.id}`} className="flex-1">
-                        <Button variant="outline" className="w-full">
-                            View Details
-                        </Button>
-                    </Link>
-                    {onAddBill && (
-                        <Button onClick={onAddBill} className="flex-1">
-                            Add Bill
-                        </Button>
-                    )}
                 </div>
             </CardContent>
         </Card>

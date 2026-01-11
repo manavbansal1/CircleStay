@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { getListing, getUserProfile, createViewingRequest, createNotification } from '@/lib/firestore';
+import { getListing, getUserProfile, createViewingRequest, createNotification, deleteListing } from '@/lib/firestore';
 import type { Listing, UserProfile } from '@/lib/firestore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Button } from '@/components/Button';
 import { AreaInsightsCard } from '@/components/AreaInsightsCard';
 import { AreaChatbot } from '@/components/AreaChatbot';
-import { MapPin, Bed, Bath, Calendar, User } from 'lucide-react';
+import { MapPin, Bed, Bath, Calendar, User, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import styles from './page.module.css';
 
@@ -24,6 +24,8 @@ export default function ListingDetailPage() {
     const [selectedImage, setSelectedImage] = useState(0);
     const [showRequestModal, setShowRequestModal] = useState(false);
     const [requestMessage, setRequestMessage] = useState('');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         async function loadListing() {
@@ -76,6 +78,20 @@ export default function ListingDetailPage() {
             alert('Failed to send request. Please try again.');
         } finally {
             setRequesting(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!listing) return;
+
+        setDeleting(true);
+        try {
+            await deleteListing(listing.id);
+            router.push('/marketplace');
+        } catch (error) {
+            console.error('Error deleting listing:', error);
+            alert('Failed to delete listing. Please try again.');
+            setDeleting(false);
         }
     };
 
@@ -232,7 +248,7 @@ export default function ListingDetailPage() {
                                 </Button>
                             </div>
 
-                            {!isOwnListing && (
+                            {!isOwnListing ? (
                                 <Button
                                     onClick={() => setShowRequestModal(true)}
                                     className="w-full"
@@ -240,11 +256,50 @@ export default function ListingDetailPage() {
                                 >
                                     Request to View
                                 </Button>
+                            ) : (
+                                <Button
+                                    onClick={() => setShowDeleteModal(true)}
+                                    variant="outline"
+                                    className="w-full text-red-600 border-red-200 hover:bg-red-50"
+                                    size="lg"
+                                >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Delete Listing
+                                </Button>
                             )}
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl border border-gray-200">
+                        <h3 className="text-xl font-bold mb-4 text-gray-900">Delete Listing</h3>
+                        <p className="text-sm text-gray-600 mb-6">
+                            Are you sure you want to delete this listing? This action cannot be undone.
+                        </p>
+                        <div className="flex gap-3">
+                            <Button
+                                variant="outline"
+                                onClick={() => setShowDeleteModal(false)}
+                                className="flex-1"
+                                disabled={deleting}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleDelete}
+                                disabled={deleting}
+                                className="flex-1 bg-red-600 hover:bg-red-700"
+                            >
+                                {deleting ? 'Deleting...' : 'Delete'}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Request Modal */}
             {showRequestModal && (
