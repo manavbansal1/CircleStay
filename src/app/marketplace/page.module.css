@@ -212,18 +212,22 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    width: 100%;
 }
 
 .priceInputs {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    width: 100%;
 }
 
 .priceInput {
     flex: 1;
+    min-width: 0;
+    width: 100%;
     height: 2.5rem;
-    padding: 0 0.75rem;
+    padding: 0 0.5rem;
     border-radius: 0.5rem;
     border: 2px solid rgba(139, 92, 46, 0.2);
     background: rgba(255, 255, 255, 0.8);
@@ -237,18 +241,104 @@
     box-shadow: 0 0 0 3px rgba(203, 134, 82, 0.1);
 }
 
+.sliderContainer {
+    position: relative;
+    height: 2rem;
+    margin: 0.5rem 0;
+}
+
+.rangeSlider {
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    background: transparent;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.rangeSlider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to right, rgba(203, 134, 82, 0.2), rgba(203, 134, 82, 0.4));
+    border-radius: 3px;
+}
+
+.rangeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, hsl(25, 70%, 50%), hsl(20, 80%, 60%));
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    border: 2px solid white;
+    margin-top: -6px;
+    transition: all 0.2s;
+}
+
+.rangeSlider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 3px 8px rgba(203, 134, 82, 0.4);
+}
+
+.rangeSlider::-webkit-slider-thumb:active {
+    transform: scale(1.05);
+}
+
+.rangeSlider::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to right, rgba(203, 134, 82, 0.2), rgba(203, 134, 82, 0.4));
+    border-radius: 3px;
+}
+
+.rangeSlider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, hsl(25, 70%, 50%), hsl(20, 80%, 60%));
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    border: 2px solid white;
+    transition: all 0.2s;
+}
+
+.rangeSlider::-moz-range-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 3px 8px rgba(203, 134, 82, 0.4);
+}
+
+.priceLabels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: hsl(25, 20%, 45%);
+    font-weight: 600;
+}
+
 /* Content Area */
 .content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     animation: fadeInUp 0.6s ease-out 0.2s both;
+    min-height: 100%;
 }
 
 .resultsHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 46, 0.1);
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .resultsCount {
@@ -289,13 +379,31 @@
 /* Empty State */
 .emptyState {
     text-align: center;
-    padding: 5rem 2rem;
+    padding: 3rem 2rem;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(139, 92, 46, 0.1);
     border-radius: 1rem;
-    max-width: 32rem;
-    margin: 0 auto;
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+@media (min-width: 768px) {
+    .emptyState {
+        min-height: 500px;
+        padding: 5rem 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .emptyState {
+        min-height: 600px;
+    }
 }
 
 .emptyState h3 {

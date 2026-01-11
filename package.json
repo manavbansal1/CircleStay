@@ -12,6 +12,7 @@
     "dev:all": "concurrently \"npm run dev\" \"npm run server:dev\""
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@react-google-maps/api": "^2.20.8",
     "cloudinary": "^2.8.0",
     "clsx": "^2.1.1",

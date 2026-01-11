@@ -125,9 +125,19 @@ export function Navbar() {
                                 <NotificationCenter />
                                 <Link href="/profile">
                                     <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors cursor-pointer">
-                                        <User className="h-4 w-4" />
+                                        {user.photoURL ? (
+                                            <img
+                                                src={user.photoURL}
+                                                alt={user.displayName || 'User'}
+                                                className="h-7 w-7 rounded-full object-cover border-2 border-white shadow-sm"
+                                            />
+                                        ) : (
+                                            <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center border-2 border-white shadow-sm">
+                                                <User className="h-4 w-4 text-primary" />
+                                            </div>
+                                        )}
                                         <span className="text-sm font-medium">
-                                            {user.displayName || user.email}
+                                            {user.displayName || 'My Account'}
                                         </span>
                                     </div>
                                 </Link>
@@ -186,9 +196,19 @@ export function Navbar() {
                                     <>
                                         <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
                                             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors cursor-pointer">
-                                                <User className="h-4 w-4" />
+                                                {user.photoURL ? (
+                                                    <img
+                                                        src={user.photoURL}
+                                                        alt={user.displayName || 'User'}
+                                                        className="h-7 w-7 rounded-full object-cover border-2 border-white shadow-sm"
+                                                    />
+                                                ) : (
+                                                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center border-2 border-white shadow-sm">
+                                                        <User className="h-4 w-4 text-primary" />
+                                                    </div>
+                                                )}
                                                 <span className="text-sm font-medium">
-                                                    {user.displayName || user.email}
+                                                    {user.displayName || 'My Account'}
                                                 </span>
                                             </div>
                                         </Link>

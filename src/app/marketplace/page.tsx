@@ -217,6 +217,30 @@ export default function MarketplacePage() {
                                                 className={styles.priceInput}
                                             />
                                         </div>
+                                        <div className={styles.sliderContainer}>
+                                            <input
+                                                type="range"
+                                                min="0"
+                                                max={Math.max(...listings.map(l => l.price), 10000)}
+                                                value={priceRange[0]}
+                                                onChange={(e) => setPriceRange([Math.min(parseInt(e.target.value), priceRange[1] - 100), priceRange[1]])}
+                                                className={styles.rangeSlider}
+                                                style={{ zIndex: priceRange[0] > (Math.max(...listings.map(l => l.price), 10000) / 2) ? 5 : 3 }}
+                                            />
+                                            <input
+                                                type="range"
+                                                min="0"
+                                                max={Math.max(...listings.map(l => l.price), 10000)}
+                                                value={priceRange[1]}
+                                                onChange={(e) => setPriceRange([priceRange[0], Math.max(parseInt(e.target.value), priceRange[0] + 100)])}
+                                                className={styles.rangeSlider}
+                                                style={{ zIndex: priceRange[0] > (Math.max(...listings.map(l => l.price), 10000) / 2) ? 3 : 5 }}
+                                            />
+                                        </div>
+                                        <div className={styles.priceLabels}>
+                                            <span>${priceRange[0]}</span>
+                                            <span>${priceRange[1]}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
