@@ -9,6 +9,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Button } from '@/components/Button';
 import { AreaInsightsCard } from '@/components/AreaInsightsCard';
 import { AreaChatbot } from '@/components/AreaChatbot';
+import { ListingMap } from '@/components/ListingMap';
 import { MapPin, Bed, Bath, Calendar, User, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import styles from './page.module.css';
@@ -210,6 +211,13 @@ export default function ListingDetailPage() {
                                     </div>
                                 </div>
                             )}
+
+                            {/* Location Map */}
+                            <ListingMap 
+                                address={listing.location}
+                                lat={undefined}
+                                lng={undefined}
+                            />
 
                             {/* Area Insights */}
                             <AreaInsightsCard 
