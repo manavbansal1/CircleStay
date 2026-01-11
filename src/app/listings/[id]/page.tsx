@@ -7,6 +7,7 @@ import { getListing, getUserProfile, createViewingRequest, createNotification } 
 import type { Listing, UserProfile } from '@/lib/firestore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Button } from '@/components/Button';
+import { AreaInsightsCard } from '@/components/AreaInsightsCard';
 import { MapPin, Bed, Bath, Calendar, User } from 'lucide-react';
 import { format } from 'date-fns';
 import styles from './page.module.css';
@@ -191,6 +192,13 @@ export default function ListingDetailPage() {
                                     </div>
                                 </div>
                             )}
+
+                            {/* Area Insights */}
+                            <AreaInsightsCard 
+                                address={listing.location}
+                                lat={undefined}
+                                lng={undefined}
+                            />
                         </div>
 
                         {/* Sidebar */}

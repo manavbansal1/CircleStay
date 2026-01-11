@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { api } from '@/lib/api';
+import { getUserProfile } from '@/lib/firestore';
 
 interface User {
     uid: string;
@@ -36,12 +37,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             if (firebaseUser) {
-                setUser({
-                    uid: firebaseUser.uid,
-                    email: firebaseUser.email,
-                    displayName: firebaseUser.displayName,
-                    photoURL: firebaseUser.photoURL,
-                });
+                // Fetch user profile from Firestore to get the latest photoURL and displayName
+                try {
+                    const userProfile = await getUserProfile(firebaseUser.uid);
+                    setUser({
+                        uid: firebaseUser.uid,
+                        email: firebaseUser.email,
+                        displayName: userProfile?.displayName || firebaseUser.displayName,
+                        photoURL: userProfile?.photoURL || firebaseUser.photoURL,
+                    });
+                } catch (error) {
+                    console.error('Error fetching user profile:', error);
+                    // Fallback to Firebase Auth data
+                    setUser({
+                        uid: firebaseUser.uid,
+                        email: firebaseUser.email,
+                        displayName: firebaseUser.displayName,
+                        photoURL: firebaseUser.photoURL,
+                    });
+                }
             } else {
                 setUser(null);
             }

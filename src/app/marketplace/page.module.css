@@ -326,12 +326,19 @@
     flex-direction: column;
     gap: 1.5rem;
     animation: fadeInUp 0.6s ease-out 0.2s both;
+    min-height: 100%;
 }
 
 .resultsHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 46, 0.1);
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .resultsCount {
@@ -372,13 +379,31 @@
 /* Empty State */
 .emptyState {
     text-align: center;
-    padding: 5rem 2rem;
+    padding: 3rem 2rem;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(139, 92, 46, 0.1);
     border-radius: 1rem;
-    max-width: 32rem;
-    margin: 0 auto;
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+@media (min-width: 768px) {
+    .emptyState {
+        min-height: 500px;
+        padding: 5rem 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .emptyState {
+        min-height: 600px;
+    }
 }
 
 .emptyState h3 {
