@@ -8,6 +8,7 @@ import type { Listing, UserProfile } from '@/lib/firestore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Button } from '@/components/Button';
 import { AreaInsightsCard } from '@/components/AreaInsightsCard';
+import { AreaChatbot } from '@/components/AreaChatbot';
 import { MapPin, Bed, Bath, Calendar, User } from 'lucide-react';
 import { format } from 'date-fns';
 import styles from './page.module.css';
@@ -277,6 +278,14 @@ export default function ListingDetailPage() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Area Chatbot */}
+            {listing && (
+                <AreaChatbot 
+                    address={listing.location}
+                    areaContext={`Property: ${listing.title}, Location: ${listing.location}, Type: ${listing.type}, Price: $${listing.price}/month`}
+                />
             )}
         </ProtectedRoute>
     );
