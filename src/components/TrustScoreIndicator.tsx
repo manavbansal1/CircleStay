@@ -17,7 +17,7 @@ export function TrustScoreIndicator({ score, maxScore = 120 }: TrustScoreProps) 
     const getScoreColor = (score: number) => {
         if (score >= 90) return { primary: '#9333ea', secondary: '#c084fc', glow: '147, 51, 234' }; // Purple
         if (score >= 80) return { primary: '#059669', secondary: '#34d399', glow: '5, 150, 105' }; // Green
-        if (score >= 70) return { primary: '#2563eb', secondary: '#60a5fa', glow: '37, 99, 235' }; // Blue
+        if (score >= 70) return { primary: '#8b5c2e', secondary: '#b8865f', glow: '139, 92, 46' }; // Brown
         if (score >= 60) return { primary: '#f59e0b', secondary: '#fbbf24', glow: '245, 158, 11' }; // Yellow
         return { primary: '#f97316', secondary: '#fb923c', glow: '249, 115, 22' }; // Orange
     };

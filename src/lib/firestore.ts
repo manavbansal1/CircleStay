@@ -396,8 +396,13 @@ export async function addUserRating(data: {
     const ratingsRef = collection(db, 'userRatings');
     const newRatingRef = doc(ratingsRef);
 
+    // Remove undefined values to avoid Firestore errors
+    const cleanData = Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== undefined)
+    );
+
     await setDoc(newRatingRef, {
-        ...data,
+        ...cleanData,
         id: newRatingRef.id,
         createdAt: new Date()
     });
