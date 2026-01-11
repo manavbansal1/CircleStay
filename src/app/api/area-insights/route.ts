@@ -160,7 +160,7 @@ export async function GET(request: NextRequest) {
         if (GEMINI_API_KEY) {
             try {
                 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-                const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
                 const prompt = `Based on the following data about the area near ${address}:
 - ${restaurants} restaurants and cafes nearby
