@@ -87,7 +87,12 @@ export function NotificationItem({ notification, onMarkAsRead, onActionComplete 
         }
 
         // Navigate based on notification type
-        if (notification.type === 'pool_invite' && notification.poolId) {
+        if (notification.type === 'viewing_request') {
+            // For viewing requests, navigate to the requester's profile
+            router.push(`/profile/${notification.senderId}`);
+        } else if (notification.type === 'pool_invite' && notification.poolId) {
+            router.push(`/commons/${notification.poolId}`);
+        } else if (notification.type === 'pool_joined' && notification.poolId) {
             router.push(`/commons/${notification.poolId}`);
         } else if (notification.type === 'bill_added' && notification.poolId) {
             router.push(`/commons/${notification.poolId}`);
@@ -141,7 +146,13 @@ export function NotificationItem({ notification, onMarkAsRead, onActionComplete 
                         {notification.message}
                     </p>
 
-                    {poolName && (notification.type === 'pool_invite' || notification.type === 'bill_added' || notification.type === 'payment_received') && (
+                    {notification.senderEmail && (notification.type === 'viewing_request' || notification.type === 'pool_joined' || notification.type === 'pool_invite' || notification.type === 'bill_added' || notification.type === 'payment_received') && (
+                        <p className="text-xs text-gray-600 mt-1">
+                            Contact: <a href={`mailto:${notification.senderEmail}`} className="text-[hsl(25,45%,45%)] hover:underline" onClick={(e) => e.stopPropagation()}>{notification.senderEmail}</a>
+                        </p>
+                    )}
+
+                    {poolName && (notification.type === 'pool_invite' || notification.type === 'bill_added' || notification.type === 'payment_received' || notification.type === 'pool_joined') && (
                         <p className="text-xs text-gray-600 mt-1">
                             Pool: {poolName}
                         </p>

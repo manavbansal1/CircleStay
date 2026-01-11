@@ -87,7 +87,8 @@ export interface Notification {
     id: string;
     recipientId: string;
     senderId: string;
-    type: 'viewing_request' | 'review' | 'message' | 'pool_invite' | 'bill_added' | 'payment_received';
+    senderEmail?: string;
+    type: 'viewing_request' | 'review' | 'message' | 'pool_invite' | 'bill_added' | 'payment_received' | 'pool_joined';
     listingId?: string;
     poolId?: string;
     billId?: string;

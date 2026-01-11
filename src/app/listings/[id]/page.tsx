@@ -64,6 +64,7 @@ export default function ListingDetailPage() {
             await createNotification({
                 recipientId: listing.hostId,
                 senderId: user.uid,
+                senderEmail: user.email || undefined,
                 type: 'viewing_request',
                 listingId: listing.id,
                 message: `requested to view your listing "${listing.title}"`,

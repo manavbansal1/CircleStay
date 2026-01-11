@@ -16,7 +16,7 @@ import {
     Timestamp
 } from 'firebase/firestore';
 import { app } from './firebase';
-import { createNotification } from './firestore';
+import { createNotification, getUserProfile } from './firestore';
 
 const db = getFirestore(app);
 
@@ -189,10 +189,15 @@ export async function joinPublicPool(poolId: string, userId: string): Promise<vo
         updatedAt: new Date()
     });
 
+    // Get user's email for notification
+    const userProfile = await getUserProfile(userId);
+    const senderEmail = userProfile?.email;
+
     // Notify pool creator
     await createNotification({
         recipientId: pool.creatorId,
         senderId: userId,
+        senderEmail: senderEmail,
         type: 'pool_joined',
         poolId: poolId,
         message: `joined your public pool "${pool.name}"`,
@@ -221,11 +226,16 @@ export async function inviteToPool(poolId: string, invitedUserIds: string[], inv
         updatedAt: new Date()
     });
 
+    // Get inviter's email for notification
+    const inviterProfile = await getUserProfile(inviterId);
+    const inviterEmail = inviterProfile?.email;
+
     // Create notifications for each invited user
     for (const userId of invitedUserIds) {
         await createNotification({
             recipientId: userId,
             senderId: inviterId,
+            senderEmail: inviterEmail,
             type: 'pool_invite',
             poolId: poolId,
             message: `invited you to join the pool "${pool.name}"`,
@@ -334,12 +344,17 @@ export async function addBill(data: {
         updatedAt: now
     });
 
+    // Get bill payer's email for notification
+    const payerProfile = await getUserProfile(data.paidById);
+    const payerEmail = payerProfile?.email;
+
     // Create notifications for all pool members except the person who added the bill
     for (const memberId of pool.memberIds) {
         if (memberId !== data.paidById) {
             await createNotification({
                 recipientId: memberId,
                 senderId: data.paidById,
+                senderEmail: payerEmail,
                 type: 'bill_added',
                 poolId: data.poolId,
                 billId: newBillRef.id,
@@ -409,10 +424,15 @@ export async function markBillPaid(billId: string, userId: string): Promise<void
         splits: updatedSplits
     });
 
+    // Get payer's email for notification
+    const userProfile = await getUserProfile(userId);
+    const userEmail = userProfile?.email;
+
     // Notify the person who paid
     await createNotification({
         recipientId: bill.paidById,
         senderId: userId,
+        senderEmail: userEmail,
         type: 'payment_received',
         poolId: bill.poolId,
         billId: billId,

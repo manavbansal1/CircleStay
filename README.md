@@ -11,23 +11,50 @@ A modern rental marketplace with integrated bill splitting and trust-based reput
 
 ### Core Features
 - **🏘️ Rental Marketplace**: Browse and list rental properties with advanced filtering
-- **💰 Commons (Bill Splitting)**: Create pools to split rent and bills with roommates
+- **💰 Commons (Bill Splitting)**: Create public or private pools for subscription sharing or expense splitting
+  - **Public Pools**: Share subscriptions (Netflix, Spotify, etc.) with verified members
+  - **Private Pools**: Split rent and bills with trusted roommates (Splitwise-style)
 - **⭐ Trust Score System**: Build reputation through verified actions and peer ratings
 - **🔐 ID Verification**: Boost trust score with government ID verification (mock)
-- **📊 Real-time Notifications**: Stay updated on pool activities and ratings
+- **📊 Real-time Notifications**: Stay updated on pool activities, viewing requests, and ratings
 - **🖼️ Image Upload**: Cloudinary integration for property and profile photos
+- **🤖 AI-Powered Insights**: Google Gemini integration for area analysis and chatbot assistance
+- **📧 Contact Notifications**: Receive email addresses for viewing requests and pool join requests
 
 ### Trust Score Features
 - **Dynamic Scoring Algorithm**: Base score (50) + ID Verification (20) + Rating Score (30) + Activity Bonus (20)
 - **Peer Rating System**: Rate roommates after each payment
 - **Transparent Breakdown**: See exactly how your trust score is calculated
 - **Visual Indicators**: Color-coded trust levels with modern animations
+- **Score Calculation Details**: Detailed formulas showing how each metric contributes to scores
 
 ### Marketplace Features
 - **Advanced Filters**: Filter by connection type, property type, price range
 - **Search Functionality**: Quick search across listings
 - **Sidebar Navigation**: Clean, intuitive filtering interface
 - **Responsive Design**: Mobile-first approach with desktop optimization
+- **Viewing Requests**: Request property viewings with contact information shared via notifications
+- **Delete Listings**: Hosts can remove their own listings with confirmation
+
+### AI & Area Insights
+- **Area Analysis**: Get comprehensive insights about neighborhoods powered by Google Gemini AI
+- **Safety Scores**: AI-estimated safety ratings for areas
+- **Transit Scores**: Public transportation accessibility analysis
+- **Amenities Scores**: Calculate area amenities based on nearby facilities
+- **Livability Scores**: Composite score considering restaurants, parks, schools, and hospitals
+- **Interactive Chat**: Ask questions about areas and get AI-powered responses
+- **Score Breakdown**: Transparent calculation formulas for all area scores
+
+### Pool Management
+- **Public Pool Discovery**: Browse and join public pools for subscription sharing
+- **Private Expense Pools**: Create private pools for rent and bill splitting
+- **Member Management**: Invite members by email with case-insensitive search
+- **Bill Tracking**: Add bills with custom split ratios
+- **Balance Calculations**: Real-time tracking of who owes what
+- **Delete Pools**: Pool creators can delete pools (with confirmation)
+- **Visual Design**: Enhanced UI with visibility badges, gradients, and member avatars
+- **Join Limits**: Configure maximum members for public pools
+- **Monthly Fees**: Set subscription costs for public pools
 
 ## 🛠️ Tech Stack
 
@@ -38,6 +65,7 @@ A modern rental marketplace with integrated bill splitting and trust-based reput
 - **Animations**: Framer Motion 12.25
 - **Icons**: Lucide React
 - **Date Handling**: date-fns
+- **AI Integration**: Google Generative AI SDK (@google/generative-ai)
 
 ### Backend
 - **Database**: Firebase Firestore
@@ -45,6 +73,8 @@ A modern rental marketplace with integrated bill splitting and trust-based reput
 - **Storage**: Cloudinary
 - **Server**: Express.js (API routes)
 - **Admin SDK**: Firebase Admin
+- **AI Service**: Google Gemini API (gemini-2.0-flash-exp model)
+- **Maps**: Google Maps JavaScript API for geocoding and places
 
 ### Development Tools
 - **Build System**: Turbopack
@@ -59,14 +89,16 @@ circlestay/
 ├── src/
 │   ├── app/                      # Next.js App Router pages
 │   │   ├── api/                  # API routes
-│   │   │   └── users/search/     # User search endpoint
+│   │   │   ├── users/search/     # User search endpoint
+│   │   │   ├── area-insights/    # AI-powered area analysis
+│   │   │   └── area-chat/        # AI chatbot for area questions
 │   │   ├── commons/              # Bill splitting pages
-│   │   │   ├── page.tsx          # Pools dashboard
+│   │   │   ├── page.tsx          # Pools dashboard with public/private tabs
 │   │   │   └── [poolId]/         # Individual pool details
 │   │   ├── listings/             # Property listings
-│   │   │   ├── [id]/             # Listing details
+│   │   │   ├── [id]/             # Listing details with viewing requests
 │   │   │   └── create/           # Create new listing
-│   │   ├── marketplace/          # Browse listings with filters
+│   │   ├── marketplace/          # Browse listings with filters and AI insights
 │   │   ├── profile/              # User profile management
 │   │   │   ├── [id]/             # Public profile view
 │   │   │   └── edit/             # Edit own profile
@@ -76,18 +108,22 @@ circlestay/
 │   │   └── onboarding/           # New user setup
 │   ├── components/               # Reusable React components
 │   │   ├── AddBillModal.tsx      # Bill creation interface
-│   │   ├── CreatePoolModal.tsx   # Pool creation interface
+│   │   ├── CreatePoolModal.tsx   # Pool creation with visibility options
+│   │   ├── InviteMembersModal.tsx # Invite users by email
+│   │   ├── PoolCard.tsx          # Enhanced pool display with badges
 │   │   ├── RateUserModal.tsx     # Peer rating system
 │   │   ├── TrustScoreIndicator.tsx # Animated score display
-│   │   ├── Navbar.tsx            # Main navigation
+│   │   ├── AreaInsightsCard.tsx  # AI-powered area analysis display
+│   │   ├── Navbar.tsx            # Main navigation with logo
 │   │   ├── NotificationCenter.tsx # Real-time notifications
+│   │   ├── NotificationItem.tsx  # Notification with contact info
 │   │   └── ProtectedRoute.tsx    # Auth guard
 │   ├── contexts/
 │   │   └── AuthContext.tsx       # Firebase auth state
 │   └── lib/                      # Utility libraries
 │       ├── firebase.ts           # Firebase client config
 │       ├── firestore.ts          # User & rating operations
-│       ├── firestore-pools.ts    # Pool & bill operations
+│       ├── firestore-pools.ts    # Pool & bill operations (public/private)
 │       ├── cloudinary.ts         # Image upload utilities
 │       └── api.ts                # API client
 ├── server/                       # Express backend
@@ -100,6 +136,7 @@ circlestay/
 │   └── routes/
 │       └── auth.js               # Auth endpoints
 ├── public/                       # Static assets
+│   └── Logo-SVG.svg             # CircleStay logo and favicon
 ├── FIRESTORE_RULES.md           # Security rules documentation
 ├── BACKEND_SETUP.md             # Backend configuration guide
 └── circlestay-*-adminsdk.json   # Firebase service account
@@ -148,6 +185,10 @@ circlestay/
    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
    CLOUDINARY_API_KEY=your_api_key
    CLOUDINARY_API_SECRET=your_api_secret
+
+   # Google APIs
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
+   NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
    ```
 
 4. **Add Firebase Admin SDK credentials**
@@ -215,18 +256,40 @@ Maximum Score: 120 points
 
 ### Commons (Bill Splitting)
 
+**Pool Types:**
+
+1. **Private Pools** (Splitwise-style expense splitting)
+   - Split rent and bills with trusted roommates
+   - Flexible split ratios for each bill
+   - Real-time balance tracking
+   - Invite-only membership
+
+2. **Public Pools** (Subscription sharing)
+   - Share subscriptions (Netflix, Spotify, Disney+, etc.)
+   - Set maximum members and monthly fees
+   - Browse and join available public pools
+   - Open discovery for all users
+
 **How it works:**
-1. **Create a Pool**: Set up a shared expense pool with roommates
-2. **Add Members**: Invite users by email to join the pool
-3. **Log Bills**: Any member can add bills with custom split ratios
-4. **Track Balances**: System calculates who owes what in real-time
-5. **Rate Members**: After payments, rate roommates to build trust
+1. **Create a Pool**: Choose between public (subscriptions) or private (bills) pool type
+2. **Configure Settings**: Set member limits and fees for public pools
+3. **Add Members**: Invite users by email (case-insensitive search)
+4. **Log Bills**: Any member can add bills with custom split ratios
+5. **Track Balances**: System calculates who owes what in real-time
+6. **Rate Members**: After payments, rate roommates to build trust
+7. **Delete Pools**: Creators can delete pools with confirmation warning
 
 **Balance Calculation:**
 - Each bill creates obligations based on split amounts
 - Balances are calculated as: `paid - owed`
 - Positive balance = others owe you
 - Negative balance = you owe others
+
+**Public Pool Discovery:**
+- Browse all available public pools
+- See current member count and spots available
+- Calculate cost per person
+- Join instantly if space available
 
 ### Rating System
 
@@ -255,6 +318,25 @@ Maximum Score: 120 points
 4. Upload property images via Cloudinary
 5. Listing appears in marketplace immediately
 
+**Viewing Requests:**
+- Request to view properties from listing details page
+- Host receives notification with your contact email
+- Enable direct communication between interested renters and hosts
+
+**Managing Listings:**
+- Hosts can delete their own listings
+- Confirmation modal prevents accidental deletions
+- Automatic redirect after deletion
+
+**AI-Powered Area Insights:**
+- View comprehensive area analysis on listing pages
+- Google Gemini AI provides safety assessments
+- See detailed score breakdowns with calculation formulas
+- Livability Score: restaurants×2 + stores×3 + parks×4 + schools×3 + hospitals×2
+- Transit Score: stations×15
+- Amenities Score: average of (restaurants + stores + parks) × 10
+- Interactive chat for area-specific questions
+
 **Filtering System:**
 - **Connection Type**: Filter by who can apply
 - **Property Type**: Narrow by property category
@@ -265,11 +347,19 @@ Maximum Score: 120 points
 ### Notifications
 
 **Real-time notifications for:**
-- New pool invitations
+- New pool invitations (with accept/decline actions)
+- Pool join requests (with member contact email)
 - Bill additions
 - Payment reminders
 - New ratings received
+- Viewing requests (with requester contact email)
 - Profile views
+
+**Enhanced Contact Information:**
+- Viewing requests include requester's email for direct contact
+- Pool join notifications include member's email
+- Clickable mailto links for easy communication
+- Helps hosts and pool creators connect with interested users
 
 Notifications are stored in Firestore and fetched on-demand to avoid requiring composite indexes.
 
@@ -279,13 +369,13 @@ Notifications are stored in Firestore and fetched on-demand to avoid requiring c
 
 The application uses comprehensive security rules:
 
-- **Users**: Read by all authenticated users, write only own profile
+- **Users**: Read by all authenticated users, write only own profile, emails stored in lowercase
 - **Listings**: Read by all, create by any, update/delete only by host
 - **Reviews**: Read by all, create only, no edits/deletes
-- **Pools**: Read by all, update only by members/creator
+- **Pools**: Read by all, update only by members/creator, support public/private visibility
 - **Bills**: Read by all, delete only by bill creator
 - **UserRatings**: Read by all, create only, no edits/deletes
-- **Notifications**: Read/update only by recipient
+- **Notifications**: Read/update only by recipient, includes sender contact information
 
 ### Authentication
 
@@ -335,24 +425,41 @@ const docs = await getDocs(query(ref, where('userId', '==', id)))
 const filtered = docs.filter(d => d.data().read === false)
 ```
 
+### Email Search Case Sensitivity
+**Solution**: Emails are stored in lowercase and searches include fallback case-insensitive matching:
+- New users have emails automatically lowercased
+- Search API includes fallback to scan all users if exact match fails
+- Ensures invite system works regardless of email casing
+
 ### ID Verification (Mock)
 The ID verification is currently a mock implementation. In production:
 - Integrate with services like Stripe Identity or Persona
 - Store verification status and documents securely
 - Implement proper KYC compliance
 
+### Gemini API Rate Limits
+The area insights feature uses Google Gemini AI which has rate limits:
+- Free tier: 15 requests per minute
+- Consider implementing caching for frequently searched areas
+- Add rate limit handling and user feedback
+
 ## 🚧 Future Enhancements
 
 - [ ] Real ID verification integration
-- [ ] Payment gateway for rent/bills
+- [ ] Payment gateway for rent/bills (Stripe integration)
 - [ ] In-app messaging between users
 - [ ] Calendar integration for viewing schedules
 - [ ] Rental agreement templates
 - [ ] Dispute resolution system
 - [ ] Mobile app (React Native)
-- [ ] Email notifications
+- [ ] Email notifications (SendGrid/AWS SES)
 - [ ] Social auth (Google, Facebook)
 - [ ] Multi-language support
+- [ ] Advanced AI chatbot with conversation history
+- [ ] Automated bill splitting suggestions
+- [ ] Export pool/bill history to CSV
+- [ ] Recurring bill automation
+- [ ] Push notifications via Firebase Cloud Messaging
 
 ## 📄 License
 
