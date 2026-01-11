@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CircleStay - Trusted Student Housing",
   description: "Stop paying the Trust Tax. Affordable housing through your social circle.",
+  icons: {
+    icon: "/Logo-SVG.svg",
+  },
 };
 
 export default function RootLayout({

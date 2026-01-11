@@ -17,7 +17,7 @@ const links = [
     { name: "Trust Score", href: "/trust-score" },
 ];
 
-const LOGO_PATH: string = "/logo.png";
+const LOGO_PATH: string = "/Logo-SVG.svg";
 
 export function Navbar() {
     const pathname = usePathname();

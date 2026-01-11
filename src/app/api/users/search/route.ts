@@ -17,25 +17,62 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Query users by email
+        const normalizedEmail = email.toLowerCase().trim();
+
+        // Query users by email (case-insensitive)
+        // First try exact match with lowercase
         const usersRef = collection(db, 'users');
-        const q = query(
+        let q = query(
             usersRef,
-            where('email', '==', email.toLowerCase().trim()),
+            where('email', '==', normalizedEmail),
             limit(1)
         );
 
-        const querySnapshot = await getDocs(q);
+        let querySnapshot = await getDocs(q);
 
+        // If not found, try fetching all users and do case-insensitive search
+        // This is less efficient but handles cases where email wasn't stored in lowercase
         if (querySnapshot.empty) {
-            return NextResponse.json(
-                { error: 'User not found' },
-                { status: 404 }
-            );
+            console.log(`No exact match for ${normalizedEmail}, trying case-insensitive search...`);
+            
+            const allUsersQuery = query(usersRef);
+            const allUsersSnapshot = await getDocs(allUsersQuery);
+            
+            let foundUser = null;
+            allUsersSnapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.email && data.email.toLowerCase() === normalizedEmail) {
+                    foundUser = data;
+                }
+            });
+
+            if (!foundUser) {
+                console.log(`No user found with email: ${normalizedEmail}`);
+                return NextResponse.json(
+                    { error: 'User not found' },
+                    { status: 404 }
+                );
+            }
+
+            console.log(`Found user via case-insensitive search:`, {
+                uid: foundUser.uid,
+                email: foundUser.email
+            });
+
+            return NextResponse.json({
+                uid: foundUser.uid,
+                email: foundUser.email,
+                displayName: foundUser.displayName
+            });
         }
 
         const userDoc = querySnapshot.docs[0];
         const userData = userDoc.data();
+
+        console.log(`Found user with email ${normalizedEmail}:`, {
+            uid: userData.uid,
+            email: userData.email
+        });
 
         return NextResponse.json({
             uid: userData.uid,

@@ -117,6 +117,11 @@ export async function createUserProfile(uid: string, data: Partial<UserProfile>)
         Object.entries(data).filter(([_, value]) => value !== undefined)
     );
 
+    // Ensure email is stored in lowercase for case-insensitive searches
+    if (cleanData.email) {
+        cleanData.email = cleanData.email.toLowerCase();
+    }
+
     await setDoc(userRef, {
         uid,
         trustScore: 50,
